@@ -1,18 +1,18 @@
-# Satie Architecture Overview
+# Project Architecture Overview
 
 ## Purpose
 
-This document gives a stable, high-level view of how Satie is organized. It is meant to explain the system boundaries, major components, and how the main layers relate to each other.
+This document gives a stable, high-level view of how the target project is organized. It explains system boundaries, major components, and how the main layers relate.
 
 Detailed tradeoffs and significant technical choices belong in ADRs under `docs/decisions/`.
 
 ## System Context
 
-Satie is a centralized data platform for schools. The platform consolidates school data from operational sources and makes it available through organized visualizations, dashboards, and reports.
+Describe the product/platform context at a high level: who uses it, what core problem it solves, and what core capabilities it must provide.
 
 ## Guiding Principles
 
-- Keep the source code in English, database names in Portuguese, and documentation in English.
+- Keep naming/language conventions explicit and documented in the project spec.
 - Prefer clear boundaries between domains instead of a single shared model for the entire system.
 - Keep backend APIs explicit and stable so frontend and integrations can evolve independently.
 - Record significant architectural decisions in ADRs before or alongside implementation.
@@ -22,8 +22,8 @@ Satie is a centralized data platform for schools. The platform consolidates scho
 ```text
 apps/
   <domain>/
-    backend/   NestJS API for the domain
-    frontend/  Vite + React UI for the domain
+    backend/   API/service layer for the domain
+    frontend/  UI/application layer for the domain
 packages/
   shared libs, UI components, utilities, contracts
 docs/
@@ -35,11 +35,11 @@ docs/
 
 ### Presentation Layer
 
-The frontend is responsible for user interaction, routing, page composition, and query orchestration. It should not contain domain rules that belong on the server.
+The frontend/presentation layer is responsible for user interaction, routing, page composition, and query orchestration. It should not contain domain rules that belong in backend/domain services.
 
 ### Application Layer
 
-The backend exposes application use cases through NestJS modules, controllers, services, and repositories. This layer coordinates validation, orchestration, and persistence.
+The backend/application layer exposes use cases through the project's chosen framework and architecture style. This layer coordinates validation, orchestration, and persistence.
 
 ### Domain Layer
 
@@ -47,7 +47,7 @@ Each domain should own its rules, entities, and invariants. Shared abstractions 
 
 ### Persistence Layer
 
-PostgreSQL is the primary system of record. Database schema changes should be reviewed as part of the feature spec and tracked explicitly when they alter domain data.
+The primary system of record must be defined in the project spec. Data schema changes should be reviewed as part of the feature spec and tracked explicitly when they alter domain data.
 
 ## Domain Boundaries
 
@@ -55,11 +55,11 @@ Core domains are intentionally not finalized yet. As the product grows, each dom
 
 Examples of likely domain areas include:
 
-- School structure and hierarchy
-- Students and enrollment
-- Classes and schedules
-- Teachers and staff
-- Reports and dashboards
+- Identity and access
+- Core business entities
+- Operational workflows
+- Reporting and analytics
+- Integrations
 
 ## Cross-Cutting Concerns
 
@@ -73,15 +73,15 @@ Backend and frontend should agree on request and response shapes through shared 
 
 ### Testing
 
-Testing should follow the stack already defined in the project:
+Testing should follow the active stack profile defined for the target project:
 
-- Backend: Jest and Supertest
-- Frontend: Vitest and React Testing Library
-- End-to-end: Playwright
+- Unit tests: [framework]
+- Integration tests: [framework]
+- End-to-end tests: [framework]
 
 ## Data and Integration
 
-The platform should treat PostgreSQL as the authoritative store for operational data modeled inside Satie. External systems, imports, and synchronization flows should be documented per feature or domain as they are introduced.
+The platform should treat the selected primary data store as the authoritative source for operational data. External systems, imports, and synchronization flows should be documented per feature or domain as they are introduced.
 
 When a feature changes data shape or ownership, the corresponding spec should document:
 
@@ -129,3 +129,4 @@ The architecture should continue to make room for:
 - Which initial domains should be formalized first?
 - Which data ingestion strategy will become the default?
 - What should be shared across all domains versus kept local to each app?
+- What stack profile constraints are mandatory versus optional for this project?

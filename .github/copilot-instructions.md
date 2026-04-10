@@ -1,4 +1,4 @@
-# Copilot Instructions — Satie
+# Copilot Instructions — SDD Spec-Kit
 
 ## Spec Driven Development
 
@@ -47,24 +47,29 @@ Keep this lightweight: prefer small, evidence-based changes over large process r
 
 ## Project Context
 
-- **Satie** is a centralized data platform for schools — organized school structure visualization with dashboards and reports.
-- Nx monorepo: apps in `apps/`, shared packages in `packages/`.
-- Full-stack domain apps follow `apps/<domain>/backend/` + `apps/<domain>/frontend/`.
+- This repository is a reusable SDD kit for new software projects.
+- Keep project-specific product/domain details in `docs/specs/project.spec.md`.
+- Keep architectural rationale in ADRs under `docs/decisions/`.
 
-## Stack
+## Technology Profile
 
-- **Backend**: NestJS
-- **Frontend**: Vite + React + TanStack Router + TanStack Query + Tailwind CSS
-- **Database**: PostgreSQL
-- **Testing**: Jest + Supertest (backend), Vitest + React Testing Library (frontend), Playwright (e2e)
-- **Package manager**: pnpm
-- **CI**: AWS-based
+Define the active stack profile in the target project before implementation.
+
+- **Monorepo/Repo model**: [Nx monorepo | single repo | other]
+- **Backend**: [e.g., NestJS | Spring Boot | ASP.NET | FastAPI]
+- **Frontend**: [e.g., React | Angular | Vue | N/A]
+- **Database**: [e.g., PostgreSQL | MySQL | MongoDB | N/A]
+- **Testing**: [unit/integration/e2e stack]
+- **Package/build manager**: [pnpm | npm | Maven | Gradle | etc.]
+- **CI/CD**: [provider and baseline workflow]
+
+When the stack is undefined, ask for it during planning and document it in the feature/plan specs.
 
 ## Naming Conventions
 
-- **Database** (tables, columns, indexes, constraints): Portuguese
-- **Source code** (all layers): English
-- **Docs, specs, ADRs**: English
+- Define naming language/rules per project in `docs/specs/project.spec.md`.
+- Keep source code naming consistent within each repository.
+- Keep docs, specs, and ADRs in one language unless a project rule says otherwise.
 
 ## Code Guidelines
 

@@ -18,13 +18,14 @@ Describe the implementation approach for this feature and define the work slices
 
 ## 3. Technical Context
 
-### Stack Baseline (Satie)
+### Stack Baseline (Project Profile)
 
-- **Monorepo**: Nx + pnpm
-- **Backend**: NestJS
-- **Frontend**: Vite + React + TanStack Router + TanStack Query + Tailwind CSS
-- **Database**: PostgreSQL
-- **Tests**: Jest + Supertest, Vitest + React Testing Library, Playwright
+- **Repository model**: [Nx monorepo | single repo | other]
+- **Backend**: [chosen stack or N/A]
+- **Frontend**: [chosen stack or N/A]
+- **Database/Data stores**: [chosen stack or N/A]
+- **Tests**: [unit/integration/e2e stack]
+- **Package/build manager**: [pnpm | npm | Maven | Gradle | etc.]
 
 ### Feature-Specific Context
 

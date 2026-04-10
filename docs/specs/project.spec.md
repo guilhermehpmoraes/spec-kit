@@ -1,45 +1,41 @@
-# Project Spec — Satie
+# Project Spec — [Project Name]
 
 ## Overview
 
-Satie is a centralized data platform for schools. It enables organized visualization of school structure and delivers insights through dashboards and reports.
+[Project Name] is [one sentence describing what the product/platform is and who it serves].
 
 ## Problem
 
-Schools deal with fragmented data across multiple systems and spreadsheets. There is no single source of truth for understanding the school's organizational structure, student performance, or operational metrics. Decision-makers lack timely, actionable insights.
+[Describe the core problem in business terms.]
 
 ## Goals
 
-- **Centralize** school data into a single, reliable platform.
-- **Visualize** the organizational structure of schools (classes, grades, teachers, students, etc.) in an intuitive way.
-- **Deliver insights** through dashboards and reports that support data-driven decisions.
+- **Goal 1**: [Primary business/technical goal]
+- **Goal 2**: [Secondary goal]
+- **Goal 3**: [Outcome or value goal]
 
 ## High-Level Architecture
 
 ```
 ┌─────────────────────────────────────────────┐
-│                 Nx Monorepo                  │
-│                                              │
-│  apps/                                       │
-│  ├── <domain>/                               │
-│  │   ├── backend/     (NestJS)               │
-│  │   └── frontend/    (Vite + React)         │
-│  │                                           │
-│  packages/                                   │
-│  ├── shared libs, UI components, utils       │
-│                                              │
-│  Database: PostgreSQL                        │
-│  CI: AWS-based                               │
+│             Repository Baseline             │
+│                                             │
+│  [monorepo or single-repo layout]          │
+│  [service/app boundaries]                  │
+│  [shared packages/modules]                 │
+│                                             │
+│  Data store(s): [database/cache/queues]    │
+│  CI/CD: [provider/tooling baseline]        │
 └─────────────────────────────────────────────┘
 ```
 
 ## Core Domains
 
-> _To be defined — this section will be expanded as domain specs are created in `docs/specs/domains/`._
+> _To be defined — expand as domain specs are created in `docs/specs/domains/`._
 
 ## Non-Functional Requirements
 
-> _To be defined — performance targets, scalability, security, accessibility, etc._
+> _To be defined — include performance, scalability, security, compliance, accessibility, and observability targets._
 
 ## Engineering Principles
 
@@ -59,7 +55,7 @@ Baseline decisions are captured in:
 
 ## Delivery Model (SDD Evolution)
 
-Satie adopts an iterative SDD model:
+This project adopts an iterative SDD model:
 
 1. Create or update the feature spec.
 2. Implement and validate against acceptance criteria.
@@ -70,8 +66,24 @@ This model intentionally evolves standards over time based on real delivery outc
 
 ## References
 
-- Stack details: see [copilot-instructions.md](../../.github/copilot-instructions.md)
+- Agent instructions and working rules: [copilot-instructions.md](../../.github/copilot-instructions.md)
 - Feature specs: `docs/specs/features/`
 - Domain specs: `docs/specs/domains/`
 - Architecture overview: [docs/architecture.md](../architecture.md)
 - Architectural decisions: `docs/decisions/`
+
+## Project-Specific Baselines
+
+Fill this section when adopting the kit in a new project.
+
+- **Domain/Product summary**: [one paragraph]
+- **Repository model**: [Nx monorepo | single repo | other]
+- **Stack profile**:
+	- Backend: [stack]
+	- Frontend: [stack]
+	- Data: [stack]
+	- Testing: [stack]
+- **Naming conventions**:
+	- Database: [language/style]
+	- Source code: [language/style]
+	- Docs/specs/ADRs: [language/style]

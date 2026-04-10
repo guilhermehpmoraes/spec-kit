@@ -14,9 +14,9 @@ A reusable **Spec Driven Development (SDD)** kit for new software projects. Star
 
 1. Import this kit into your new project.
 2. Run the SDD bootstrap prompt (`.github/prompts/sdd-bootstrap-once.prompt.md`) to:
-   - Define your product/domain context
-   - Lock in your stack profile (backend, frontend, database, testing, CI/CD)
-   - Document naming conventions
+    - Define your product/domain context
+    - Lock in your stack profile (backend, frontend, database, testing, CI/CD)
+    - Document naming conventions
 3. The prompt deletes itself after setup to keep context clean.
 4. Follow the 4-step flow for every feature starting with `docs/specs/templates/feature.spec.md`.
 
@@ -34,17 +34,17 @@ This kit is **stack-agnostic**. Define your project's profile in `docs/specs/pro
 
 ## Core Files
 
-| File | Purpose |
-|------|---------|
-| `.github/copilot-instructions.md` | Main SDD rules + 4-step flow (stack-agnostic) |
-| `AGENTS.md` | Agent guidance (replace with your stack tools if no Nx) |
-| `docs/specs/project.spec.md` | Project-specific template (duplicate & fill for each project) |
-| `docs/specs/templates/feature.spec.md` | Feature spec template |
-| `docs/specs/templates/task.spec.md` | Task breakdown template |
-| `docs/specs/templates/plan.spec.md` | Implementation plan template |
-| `docs/decisions/` | Baseline ADRs (engineering, patterns, quality tools) |
-| `.github/prompts/sdd-bootstrap-once.prompt.md` | One-shot project setup prompt |
-| `.vscode/extensions.json` | Recommended VS Code extensions |
+| File                                           | Purpose                                                       |
+| ---------------------------------------------- | ------------------------------------------------------------- |
+| `.github/copilot-instructions.md`              | Main SDD rules + 4-step flow (stack-agnostic)                 |
+| `AGENTS.md`                                    | Agent guidance (replace with your stack tools if no Nx)       |
+| `docs/specs/project.spec.md`                   | Project-specific template (duplicate & fill for each project) |
+| `docs/specs/templates/feature.spec.md`         | Feature spec template                                         |
+| `docs/specs/templates/task.spec.md`            | Task breakdown template                                       |
+| `docs/specs/templates/plan.spec.md`            | Implementation plan template                                  |
+| `docs/decisions/`                              | Baseline ADRs (engineering, patterns, quality tools)          |
+| `.github/prompts/sdd-bootstrap-once.prompt.md` | One-shot project setup prompt                                 |
+| `.vscode/extensions.json`                      | Recommended VS Code extensions                                |
 
 ## Key Principles
 

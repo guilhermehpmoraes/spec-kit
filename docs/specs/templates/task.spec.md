@@ -28,8 +28,14 @@ Do not skip gate 2.
 
 - One objective per task.
 - Use direct language and implementation intent.
+- Write for handoff: another engineer must be able to implement the task without extra meetings.
 - Include affected scope (Backend, Frontend, Infra, Data, QA).
 - Include technical notes only when they reduce ambiguity.
+- Prefer explicit behavior over generic wording (what should happen, when, and for whom).
+- Include edge cases, error paths, and non-happy paths when relevant.
+- Define expected inputs/outputs for APIs, events, or UI states when applicable.
+- Use concrete examples (payloads, field names, route names, validation rules) when they improve clarity.
+- Optional code snippets are allowed when they reduce ambiguity. Keep them short and illustrative, not full implementations.
 - Include dependencies when a task is blocked by another one.
 - Keep task size realistic for sprint planning.
 
@@ -53,17 +59,23 @@ Use this format for each task:
 - **Context**: [Why this task exists]
 - **Scope**: Backend | Frontend | Backend+Frontend | Infra | Data | QA
 - **Description**: [What must be implemented, clear and direct]
+- **Implementation Details**: [Key implementation expectations, contracts, data flow, and constraints]
 - **Acceptance Criteria**:
-	- [AC1]
-	- [AC2]
+    - [AC1]
+    - [AC2]
+- **Test Scenarios**:
+    - [Scenario 1: happy path]
+    - [Scenario 2: validation/error path]
+    - [Scenario 3: edge case]
 - **Technical Notes**: [Important implementation notes only]
+- **Example Snippet (Optional)**: [Small pseudo/code snippet only when it clarifies expected implementation]
 - **Dependencies**: [TYYY, external dependency, or N/A]
 - **Estimate**: [ex: 0.5 day, 1 day, 2 days]
 - **Priority**: Highest | High | Medium | Low
 - **Labels**: [Backend, Frontend, Integration, etc.]
 - **Jira Custom Fields**:
-	- **Tipo**: Feature | Improvement | Technical Debt | Bugfix
-	- **Tamanho**: [ex: 1 Dia, 2 Dias, 4 Dias]
+    - **Tipo**: Feature | Improvement | Technical Debt | Bugfix
+    - **Tamanho**: [ex: 1 Dia, 2 Dias, 4 Dias]
 
 ## 5. Task Quality Checklist
 
@@ -71,12 +83,39 @@ Before sending for validation, confirm all items:
 
 - [ ] Title is understandable without extra explanation.
 - [ ] Description is sufficient for implementation by another team member.
+- [ ] Implementation details are specific enough to avoid interpretation gaps.
 - [ ] Acceptance criteria are testable.
+- [ ] Test scenarios cover happy path, failure path, and edge cases (when applicable).
 - [ ] Type is Task or Bug only.
 - [ ] Priority and estimate are defined.
 - [ ] Labels and custom fields are filled.
 - [ ] Dependencies are explicit.
 - [ ] Task size is balanced for Gitflow (1 task = 1 healthy branch cycle).
+
+## 5.1 Definition of Ready (Dev Handoff)
+
+A task is ready for development only if:
+
+- Scope is explicit and bounded.
+- Required contracts are defined (API, DTO, events, UI states, or schema changes).
+- Acceptance criteria can be validated in code review and tests.
+- Open questions are resolved or captured as explicit assumptions.
+- Dependencies are either completed or clearly sequenced.
+
+## 5.2 Snippet Guidance (Optional)
+
+Use snippets only to remove ambiguity. Good candidates:
+
+- API request/response examples.
+- DTO/interface skeletons.
+- Validation rule examples.
+- UI state mapping examples.
+
+Avoid:
+
+- Large code blocks.
+- Full implementations.
+- Snippets that conflict with existing ADRs or project conventions.
 
 ## 6. Branching Guidance (Gitflow)
 

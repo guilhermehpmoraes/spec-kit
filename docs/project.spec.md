@@ -2,114 +2,103 @@
 
 ## Overview
 
-This monorepo hosts multiple **applications** (platforms), each with its own backend and frontend. Applications are not domains — they are products that contain multiple domains organized following Domain-Driven Design principles (see ADR-004).
+This repository is a reusable Spec-Driven Development workspace. It can be instantiated as a single-product repository, a multi-application monorepo, or a mixed-language platform with shared documentation and governance.
 
-The first delivery is the **Admin** platform — an internal tool for managing clients, products, features, and usage metrics across all platforms. One of the products managed through Admin is **Satie**, a centralized data platform for schools.
+The purpose of this file is to define the stable project baseline: what the workspace is for, how delivery decisions are made, and which documentation layers are expected to exist.
 
 ## Problem
 
-### Admin Platform
+Many projects start implementation before they establish a durable way to capture requirements, architecture decisions, validation criteria, and delivery learnings. That usually leads to:
 
-There is no unified tool to manage clients, activate products and features, or monitor platform usage and metrics. Operations are manual and fragmented, making it hard to onboard clients or understand system health.
-
-### Satie (Educational Product)
-
-Schools deal with fragmented data across multiple systems and spreadsheets. There is no single source of truth for understanding the school's organizational structure, student performance, or operational metrics. Decision-makers lack timely, actionable insights.
+- implicit requirements and rework during implementation
+- architecture choices that are hard to trace later
+- inconsistent task quality and test expectations
+- stack-specific assumptions leaking into the whole workspace
 
 ## Goals
 
-### Admin Platform (initial focus)
+- **Spec first**: every meaningful feature or architectural change starts from a documented spec.
+- **Explicit decisions**: long-lived technical choices are captured as ADRs.
+- **Configurable foundations**: the same kit should work for different languages, frameworks, and repo shapes.
+- **Strong execution gates**: implementation only starts from approved, implementation-ready task specs.
+- **Continuous sharpening**: retrospectives feed improvements back into templates, instructions, and ADRs.
 
-- **Manage clients** — activate, configure, and monitor client accounts.
-- **Manage products & features** — enable/disable products and feature flags per client.
-- **Visualize usage** — dashboards for navigation patterns, system usage, and operational metrics.
-- **Centralize operations** — single control plane for all managed platforms and products.
+## Repository Modes
 
-### Satie (educational product, managed by Admin)
+This kit supports multiple repository shapes. The active mode must be documented during initialization.
 
-- **Centralize** school data into a single, reliable platform.
-- **Visualize** the organizational structure of schools (classes, grades, teachers, students, etc.) in an intuitive way.
-- **Deliver insights** through dashboards and reports that support data-driven decisions.
+### Single Project
+
+One application or service with one primary codebase.
+
+### Monorepo
+
+Multiple apps, services, packages, or libraries sharing tooling and governance.
+
+### Mixed-Language Workspace
+
+Different surfaces may use different languages or frameworks, as long as validation expectations are explicit per surface.
 
 ## High-Level Architecture
 
-```
-┌──────────────────────────────────────────────────┐
-│                   Nx Monorepo                     │
-│                                                   │
-│  apps/                                            │
-│  ├── admin/                 (Application)         │
-│  │   ├── backend/           NestJS                │
-│  │   ├── frontend/          Vite + React          │
-│  │   └── (domains organized internally)           │
-│  │                                                │
-│  ├── <application>/         (Application)         │
-│  │   ├── backend/           NestJS                │
-│  │   ├── frontend/          Vite + React          │
-│  │   └── (domains organized internally)           │
-│  │                                                │
-│  packages/                                        │
-│  ├── shared libs, UI components, contracts        │
-│                                                   │
-│  Database: PostgreSQL                             │
-│  Cache/Ephemeral: Redis                            │
-│  CI: AWS-based                                    │
-└──────────────────────────────────────────────────┘
+```text
+repository/
+	docs/
+		architecture.md
+		project.spec.md
+		decisions/
+		specs/
+			apps/<app>/
+			domains/
+			features/<feature-id>/
+			templates/
+	source/
+		apps/ or services/ or packages/ or modules/
 ```
 
-## Applications
+The exact code layout is project-specific and should be documented in `docs/architecture.md` and in the relevant app or service architecture docs.
 
-| Application | Description | Status |
-|-------------|-------------|--------|
-| **Admin** | Internal administrative platform — client, product, and feature management; usage dashboards and metrics. | Active (initial focus) |
-| **Satie** | Centralized data platform for schools — school structure visualization, dashboards, and reports. | Planned |
+## Applications, Services, and Domains
 
-Each application has its own detailed architecture spec at `docs/specs/apps/<app>/architecture.md`.
+- Applications or services are the deployable runtime surfaces.
+- Domains are optional but recommended when the project benefits from bounded contexts or explicit business boundaries.
+- Domain specs live in `docs/specs/domains/` when the project uses them.
+- App or service architecture docs live in `docs/specs/apps/<app>/architecture.md`.
 
-## Domains
+## Default Preferences
 
-Domains follow DDD bounded context principles and are scoped to a single application. Each domain encapsulates a coherent problem area. Domain specs are documented in `docs/specs/domains/` and linked from feature specs for development context.
+These are defaults that may be overridden by project-specific decisions:
 
-> _Initial domains will be formalized as features are specced. See ADR-004 for the domain organization decision._
-
-### Persistence Layer
-
-PostgreSQL is the primary system of record. All entities inherit from `EntidadeBase` (audit fields + soft deletes). TypeORM with `SnakeNamingStrategy` enforces snake_case naming. Entity classes use Portuguese names. Redis is available for ephemeral data (token revocation, caching). See ADR-005.
+- Prefer a monorepo when multiple deployable surfaces or shared libraries are expected.
+- Prefer Nx when monorepo orchestration, dependency graphs, and unified task execution will add value.
+- Prefer Biome where it is a good fit.
+- For unsupported languages or ecosystems, document the replacement quality tool in ADR-003 or an app-level decision.
 
 ## Engineering Principles
 
-These principles apply to all features and domains unless a specific ADR states otherwise.
+These principles apply unless a newer ADR narrows or replaces them:
 
-- **KISS first**: prefer the simplest solution that fully meets the requirement.
-- **Self-descriptive code**: prioritize clear naming and small cohesive units over explanatory comments.
-- **Minimal comments**: use comments only for non-obvious intent, tradeoffs, or constraints that code alone cannot express.
-- **Incremental design**: start with basic proven patterns and evolve when pressure is real.
-- **Testable structure**: keep boundaries explicit so behavior can be validated with focused tests.
+- prefer the simplest design that solves the real requirement
+- favor self-descriptive code over explanatory comments
+- evolve architecture incrementally based on delivery pressure
+- keep boundaries clear enough for focused validation
+- make cross-cutting decisions explicit instead of implicit
 
-Baseline decisions are captured in:
+## Delivery Model
 
-- `docs/decisions/001-engineering-principles.md`
-- `docs/decisions/002-design-patterns-baseline.md`
-- `docs/decisions/003-biome-quality-tooling-baseline.md`
-- `docs/decisions/004-domain-driven-design-baseline.md`
-- `docs/decisions/005-database-conventions-shared-package.md`
+The project uses an iterative SDD model:
 
-## Delivery Model (SDD Evolution)
-
-The project adopts an iterative SDD model:
-
-1. Create or update the feature spec.
-2. Implement and validate against acceptance criteria.
-3. Run a short retrospective focused on: what to keep, what to avoid, and what to standardize.
-4. Incorporate the learning into stable specs/templates/decisions for future work.
-
-This model intentionally evolves standards over time based on real delivery outcomes.
+1. Draft and approve a feature spec.
+2. Turn the approved scope into a technical plan.
+3. Break the plan into implementation-ready task specs.
+4. Implement one approved task at a time with validation evidence.
+5. Run a short retrospective and sharpen the kit.
 
 ## References
 
-- Stack details: see [copilot-instructions.md](../.github/copilot-instructions.md)
+- Operating rules: `.github/copilot-instructions.md`
+- Architecture overview: `docs/architecture.md`
+- ADRs: `docs/decisions/`
 - Feature specs: `docs/specs/features/`
+- App or service architecture docs: `docs/specs/apps/`
 - Domain specs: `docs/specs/domains/`
-- Application specs: `docs/specs/apps/`
-- Architecture overview: [docs/architecture.md](./architecture.md)
-- Architectural decisions: `docs/decisions/`

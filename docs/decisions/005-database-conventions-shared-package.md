@@ -1,4 +1,4 @@
-# ADR-005: Database Conventions and Shared Database Package
+# ADR-005: Persistence Conventions and Shared Data Foundations
 
 ## Status
 
@@ -6,74 +6,52 @@ Accepted
 
 ## Context
 
-The monorepo hosts multiple applications (Admin, Satie, and future ones), all sharing PostgreSQL as the primary database. Without a shared baseline, each application would independently define:
+Some projects using this kit will have multiple applications or services that share persistence patterns. Without a shared baseline, each codebase can independently redefine:
 
-- Entity base classes (audit fields, soft deletes)
-- Naming strategies (snake_case enforcement)
-- TypeORM configuration patterns
+- audit fields and soft delete behavior
+- naming conventions for schema or persistent objects
+- ORM, query, migration, or repository setup patterns
 
 This leads to inconsistency, duplicated boilerplate, and divergent conventions across applications.
 
-Additionally, the project follows a Portuguese naming convention for database objects (tables, columns) while keeping source code in English for logic. Entity classes need a clear rule for naming to avoid constant translation friction between code and database.
+Additionally, different projects may choose different naming languages and casing rules for source code and persistence objects. Those choices must be explicit rather than implicit.
 
 ## Decision
 
-### Shared Database Package
+### Shared Data Foundation
 
-- A shared package `@satie/database` lives at `packages/database/`.
-- This package exports the base entity, TypeORM configuration utilities, and naming strategy setup.
-- All applications import `@satie/database` for database foundations. Application-specific entities and migrations remain in each app.
+- If multiple applications or services share persistence conventions, create a shared package or module for common persistence foundations.
+- That shared foundation may include base entities, audit traits, migration helpers, repository utilities, schema conventions, or connection setup.
+- Application-specific entities, schemas, and migrations remain local unless deliberately shared.
 
-### Auditable Base Entity (`EntidadeBase`)
+### Audit And Deletion Strategy
 
-All database entities MUST inherit from `EntidadeBase`, which provides:
+Projects should decide explicitly whether audit fields and soft deletes are part of the baseline. When they are, use a shared foundation to keep the rules consistent.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `criado_por` | VARCHAR(255), NOT NULL | Identifier of who created the record (user ID or `'system'`) |
-| `modificado_por` | VARCHAR(255), NOT NULL | Identifier of who last modified the record |
-| `criado_as` | TIMESTAMP, NOT NULL, DEFAULT NOW() | Creation timestamp (immutable after insert) |
-| `modificado_as` | TIMESTAMP, NOT NULL, DEFAULT NOW() | Last modification timestamp (auto-updated) |
-| `deletado_as` | TIMESTAMP, NULL | Soft delete marker (TypeORM `@DeleteDateColumn`) |
-| `deletado_por` | VARCHAR(255), NULL | Identifier of who performed the soft delete |
+Recommended baseline when auditability matters:
 
-### Soft Deletes
+- created by
+- modified by
+- created at
+- modified at
+- deleted at
+- deleted by
 
-- All tables use soft deletes by default. Records are never physically deleted in normal operations.
-- Soft delete is implemented via TypeORM's `@DeleteDateColumn` on `deletado_as`.
-- The `deletado_por` field is set alongside `deletado_as` to track who performed the deletion.
-- Queries automatically exclude soft-deleted records via TypeORM's built-in filtering.
+### Naming Conventions
 
-### Audit Field Types
+- Persistence naming conventions must be documented explicitly.
+- The language used for tables, collections, entities, documents, fields, or columns is project-specific.
+- The casing strategy for persistence objects is also project-specific.
+- Tool-specific naming strategies belong in the owning app or service architecture doc unless they are truly repo-wide.
 
-- `criado_por` and `modificado_por` use `VARCHAR(255)` (not FK) to allow flexible identifiers: user UUIDs, `'system'`, `'migration'`, `'seed'`, etc.
-- This avoids circular FK dependencies during bootstrap and supports system-level operations.
+### Tooling Scope
 
-### Snake Case Naming Strategy
-
-- The package `typeorm-naming-strategies` with `SnakeNamingStrategy` is the standard naming strategy for all TypeORM connections.
-- This ensures all table names and column names are automatically converted to `snake_case` in PostgreSQL, regardless of the casing used in TypeScript entity classes.
-- The naming strategy is configured once in the shared package and applied at connection level.
-
-### Entity Class Naming Convention
-
-- TypeORM entity classes MUST be named in Portuguese to be consistent with database table and column names.
-- Examples: `UsuarioAdmin`, `TokenRevogado`, `EntidadeBase`.
-- Entity property names follow Portuguese as well: `idUsuarioAdmin`, `email`, `senha`, `criadoPor`, `modificadoPor`, etc.
-- This eliminates the mental translation layer between entity code and database schema, since `typeorm-naming-strategies` converts `criadoPor` -> `criado_por` automatically.
-
-### What Stays in English
-
-- Service classes, controllers, DTOs, modules, guards, and all non-entity code remain in English.
-- Variable names outside of entity definitions remain in English.
-- Only entity classes and their properties use Portuguese names.
+- ORM and migration choices are project-specific.
+- If one ORM or migration tool is used across most projects that reuse this kit, promote that decision explicitly in a future ADR.
 
 ## Consequences
 
-- All applications share a single source of truth for audit fields and soft deletes.
-- New entities get audit + soft-delete behavior by inheriting `EntidadeBase` — no manual field setup.
-- Snake case is enforced automatically; developers don't need to manually specify column names.
-- Entity classes are immediately readable alongside their database schema.
-- The `@satie/database` package becomes a foundational dependency for all backends.
-- Adding new shared database utilities (e.g., custom TypeORM decorators, migration helpers) has a clear home.
-- Portuguese entity naming is scoped strictly to TypeORM entities; the rest of the codebase remains in English.
+- Shared persistence behavior becomes easier to reuse and audit.
+- Naming decisions stop being accidental and become part of the project contract.
+- Different projects can choose different persistence tooling without breaking the kit.
+- Projects that do not need shared persistence foundations can keep this ADR lightweight.

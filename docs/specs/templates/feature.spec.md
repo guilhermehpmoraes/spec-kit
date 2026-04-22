@@ -5,8 +5,8 @@
 - **Created**: [YYYY-MM-DD]
 - **Last Updated**: [YYYY-MM-DD]
 - **Owner**: [Auto-filled from `git config user.name` of the person who creates this spec]
-- **Domain**: [Domain name — must match a spec in `docs/specs/domains/<domain>.md`]
-- **Application**: [Application name — admin, satie, etc.]
+- **Domain**: [Domain, bounded context, subsystem, or N/A]
+- **Application/System**: [Application, service, platform, or repository area]
 - **Source Inputs**: [Request text, design doc, requirement links]
 - **Feature Folder**: [docs/specs/features/<feature-id>/]
 - **Feature File**: [docs/specs/features/<feature-id>/feature.spec.md]
@@ -105,7 +105,7 @@ Use this section to make Step 2 deterministic.
 
 ### Affected Areas
 
-- [Backend modules, frontend routes, shared packages, database tables, infra, QA]
+- [Apps, services, packages, modules, database areas, infra, QA]
 
 ### Proposed Implementation Slices
 
@@ -121,10 +121,10 @@ Use this section to make Step 2 deterministic.
 
 Capture enough technical detail so each generated task can be implemented without hidden context.
 
-- **Database changes (if applicable)**: [tables, columns, SQL types, nullability, defaults, PK/FK, indexes, constraints]
-- **API contracts (if applicable)**: [endpoint, method, request fields/types, response fields/types, error cases]
+- **Data changes (if applicable)**: [tables, collections, topics, files, schemas, fields, types, nullability, defaults, constraints]
+- **API or integration contracts (if applicable)**: [endpoint, method, event, request fields/types, response fields/types, error cases]
 - **UI contracts (if applicable)**: [states, transitions, validations, empty/error states]
-- **Migration notes (if applicable)**: [forward migration, rollback strategy, backfill, compatibility]
+- **Migration or rollout notes (if applicable)**: [forward migration, rollback strategy, backfill, compatibility]
 
 ### Known Dependencies
 

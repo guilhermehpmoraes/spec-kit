@@ -24,19 +24,19 @@ Describe the implementation approach for the approved feature with enough techni
 
 ## 3. Technical Context
 
-### Stack Baseline (Satie)
+### Workspace Baseline
 
-- **Monorepo**: Nx + pnpm
-- **Backend**: NestJS
-- **Frontend**: Vite + React + TanStack Router + TanStack Query + Tailwind CSS
-- **Database**: PostgreSQL
-- **Tests**: Jest + Supertest, Vitest + React Testing Library, Playwright
+- **Repository shape**: [Monorepo | Single repo | Other]
+- **Workspace/build tool**: [Nx, Turborepo, Gradle, Maven, plain workspaces, N/A]
+- **Package/build manager**: [pnpm, npm, yarn, bun, gradle, maven, other]
+- **Languages/runtime**: [TypeScript, Java, Go, Python, JVM, Node.js, browser, other]
+- **Validation tools**: [Biome, ESLint, Spotless, Checkstyle, ktlint, JUnit, Vitest, Playwright, etc.]
 
 ### Feature-Specific Context
 
-- **Touched apps/packages**: [apps/<domain>/backend, apps/<domain>/frontend, packages/<name>]
+- **Touched apps/services/packages**: [exact paths or project names]
 - **New dependencies**: [Library or N/A]
-- **Data impact**: [Schema/read-model/write-model impact or N/A]
+- **Data impact**: [Schema/read-model/write-model/message/file impact or N/A]
 - **Constraints**: [Latency, security, compliance, rollout, etc.]
 
 ### Constraints and Assumptions
@@ -55,13 +55,13 @@ This section must be detailed enough to generate implementation-ready task specs
 
 | Schema | Table | Action (Create/Alter/Drop) | Purpose |
 | ------ | ----- | -------------------------- | ------- |
-| [public] | [nome_tabela] | [Create] | [Why this table changes] |
+| [public] | [resource_name] | [Create] | [Why this object changes] |
 
 #### Columns Specification
 
 | Tabela | Campo | Tipo SQL | Nullable | Default | PK | FK Ref | Unique | Index | Notes |
 | ------ | ----- | -------- | -------- | ------- | -- | ------ | ------ | ----- | ----- |
-| [usuarios] | [id] | [uuid] | [No] | [gen_random_uuid()] | [Yes] | [N/A] | [Yes] | [PK] | [Primary key] |
+| [resource] | [id] | [uuid/int/varchar/etc.] | [No] | [default or N/A] | [Yes] | [N/A] | [Yes] | [PK] | [Primary key] |
 
 #### Constraints and Indexes
 
@@ -154,24 +154,16 @@ Use this matrix to derive one task file per row.
 List concrete paths expected to change.
 
 ```text
-apps/
-  <domain>/
-    backend/
-    frontend/
-packages/
-  <shared-lib>/
-docs/
-  specs/
-  decisions/ (if needed)
+[list the concrete repository paths that will change]
 ```
 
 ### Planned Changes by Area
 
-- **Backend**: [Modules, handlers, services, repositories, tests]
-- **Frontend**: [Routes, pages, components, queries, tests]
-- **Shared packages**: [Types, utilities, UI components]
-- **Database**: [Migrations, seeds, constraints]
-- **QA**: [Unit tests, integration tests, E2E tests, manual checks]
+- **Backend or services**: [Modules, handlers, services, repositories, jobs, tests]
+- **Frontend or clients**: [Routes, pages, components, queries, tests]
+- **Shared packages or libraries**: [Types, utilities, SDKs, UI components]
+- **Data layer**: [Migrations, schemas, constraints, indexes, seed or backfill tasks]
+- **QA**: [Unit tests, integration tests, e2e tests, manual checks]
 
 ## 9. Validation Strategy
 

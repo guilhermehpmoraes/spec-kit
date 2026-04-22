@@ -1,4 +1,4 @@
-# ADR-003: Quality Tooling Baseline by Stack Profile
+# ADR-003: Biome Quality Tooling Baseline
 
 ## Status
 
@@ -6,37 +6,35 @@ Accepted
 
 ## Context
 
-The project needs a consistent baseline for formatting and linting before creating the first domain projects.
+The project needs a single, fast, and consistent baseline for formatting and linting before creating the first domain projects.
 
-Using many overlapping tools for style and linting increases maintenance cost, slows feedback loops, and creates avoidable divergence across repositories and modules.
+Using multiple tools for style and linting increases maintenance cost, slows feedback loops, and creates avoidable divergence across apps and packages.
 
-The standard is to prioritize deterministic formatting, fast feedback, and minimal configuration overlap.
+The team standard is to prioritize performance and deterministic formatting.
 
 ## Decision
 
-We adopt one primary formatter/linter baseline per active language/runtime profile, documented in project specs and build scripts.
-
-For TypeScript/JavaScript profiles, Biome is the recommended default.
+We adopt Biome as the default code quality tool for the monorepo.
 
 ### Scope
 
-- Each project must explicitly define its quality tooling baseline in docs/specs.
-- Tooling should avoid redundant overlap (for example, multiple formatters for the same files unless justified).
-- Configuration files selected by the stack become the source of truth for formatting/linting rules.
+- Biome is the standard formatter and linter for source code in this workspace.
+- ESLint is not part of the baseline for new projects.
+- The root `biome.json` is the source of truth for formatting and linting rules.
 
 ### Operational Baseline
 
-- Root scripts should expose the standard workflow when applicable:
+- Root scripts expose the standard workflow:
     - `lint`
     - `lint:fix`
     - `format`
     - `format:check`
-- Build/task orchestration should keep lint/format targets consistent and cache-friendly.
+- Nx integration uses target defaults for `lint` with cache enabled and workspace-level inputs, including `biome.json`, so future project lint targets stay consistent.
 
 ## Consequences
 
 - Faster local and CI feedback for lint/format tasks.
-- Reduced tooling complexity by avoiding unnecessary parallel formatter/linter stacks.
-- Consistent formatting from day zero with stack-specific flexibility.
-- Future projects must document and maintain compatible lint/format targets.
-- Any proposal that increases tooling overlap must be documented in a new ADR.
+- Reduced tooling complexity by avoiding parallel formatter/linter stacks.
+- Consistent formatting and import organization from day zero.
+- Future projects must expose lint targets compatible with this baseline.
+- Any proposal to reintroduce ESLint or split tooling must be documented in a new ADR.

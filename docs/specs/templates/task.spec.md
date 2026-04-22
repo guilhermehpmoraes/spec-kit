@@ -1,156 +1,197 @@
-# Task Spec: [Feature Name]
+# Task Spec: [Task Title]
 
 - **Feature ID**: [###-feature-name]
+- **Task ID**: [TXXX]
+- **Status**: Draft | Awaiting Dependency | Ready | In Progress | Blocked | Done
+- **Type**: Task | Bug
+- **Parallelizable**: Yes | No
+- **Parallelization Notes**: [Why this task is safe to run in parallel, or why it is not]
 - **Date**: [YYYY-MM-DD]
-- **Status**: Draft
-- **Feature Spec**: [docs/specs/...]
-- **Plan Spec**: [docs/specs/...]
+- **Owner**: [Auto-filled from `git config user.name` of the person who starts implementation]
+- **Feature Folder**: [docs/specs/features/<feature-id>/]
+- **Feature Spec**: [docs/specs/features/<feature-id>/feature.spec.md]
+- **Feature Plan**: [docs/specs/features/<feature-id>/plan.spec.md]
+- **Task File**: [docs/specs/features/<feature-id>/tasks/TXXX-<short-title>.task.spec.md]
 - **Related ADRs**: [ADR-00X or N/A]
+- **Dependencies**: [TYYY, external dependency, or N/A]
 
 ## 1. Purpose
 
-This document breaks an approved plan into executable tasks with clear scope for the team.
+Describe exactly what this task must deliver and how it contributes to the feature outcome.
 
 Rules for this team:
 
 - Use only issue types: **Task** and **Bug**.
 - Do not use **Story**.
-- Each task must be easy to understand and contain the minimum necessary detail for future implementation.
+- Keep this file complete enough that another developer can implement it without hidden context.
 
-## 2. Workflow Gates (Mandatory)
+## 2. Scope
 
-1. Break feature into tasks in this spec.
-2. Stop and wait for team/product validation.
+### In Scope
 
-Do not skip gate 2.
+- [Concrete deliverable 1]
+- [Concrete deliverable 2]
 
-## 3. Task Writing Rules
+### Out of Scope
 
-- One objective per task.
-- Use direct language and implementation intent.
-- Write for handoff: another engineer must be able to implement the task without extra meetings.
-- Include affected scope (Backend, Frontend, Infra, Data, QA).
-- Include technical notes only when they reduce ambiguity.
-- Prefer explicit behavior over generic wording (what should happen, when, and for whom).
-- Include edge cases, error paths, and non-happy paths when relevant.
-- Define expected inputs/outputs for APIs, events, or UI states when applicable.
-- Use concrete examples (payloads, field names, route names, validation rules) when they improve clarity.
-- Optional code snippets are allowed when they reduce ambiguity. Keep them short and illustrative, not full implementations.
-- Include dependencies when a task is blocked by another one.
-- Keep task size realistic for sprint planning.
+- [Explicitly excluded item 1]
+- [Explicitly excluded item 2]
 
-Gitflow sizing rule (mandatory):
+## 3. Context from Feature Plan
 
-- One task should map to one branch whenever possible.
-- Avoid very small tasks that create excessive branch overhead.
-- Avoid oversized tasks that become long-lived feature branches.
-- Target task size that can be implemented, reviewed, and merged in a short cycle.
-- If a task cannot be delivered safely in one branch cycle, split it into smaller tasks.
-- If multiple tasks are too small and always change the same files, consider merging them into one task.
+- **Plan slice**: [Setup | Foundational | Slice A | Slice B | QA | Polish]
+- **Requirement refs**: [FR-001, FR-002, AC-001, AC-002]
+- **Affected Paths**: [Exact file paths or folders]
+- **Why this task exists**: [Dependency, scenario, or risk reduction]
 
-## 4. Task Structure (Template)
+## 4. Technical Specification (Required)
 
-Use this format for each task:
+This section must be detailed enough for another developer to implement without additional discovery.
 
-### [TXXX] [Task|Bug] [Title]
+If a subsection does not apply, explicitly write `N/A` and explain why.
 
-- **Type**: Task | Bug
-- **Summary**: [Short Jira title]
-- **Context**: [Why this task exists]
-- **Scope**: Backend | Frontend | Backend+Frontend | Infra | Data | QA
-- **Description**: [What must be implemented, clear and direct]
-- **Implementation Details**: [Key implementation expectations, contracts, data flow, and constraints]
-- **Acceptance Criteria**:
-    - [AC1]
-    - [AC2]
-- **Test Scenarios**:
-    - [Scenario 1: happy path]
-    - [Scenario 2: validation/error path]
-    - [Scenario 3: edge case]
-- **Technical Notes**: [Important implementation notes only]
-- **Example Snippet (Optional)**: [Small pseudo/code snippet only when it clarifies expected implementation]
-- **Dependencies**: [TYYY, external dependency, or N/A]
-- **Estimate**: [ex: 0.5 day, 1 day, 2 days]
-- **Priority**: Highest | High | Medium | Low
-- **Labels**: [Backend, Frontend, Integration, etc.]
-- **Jira Custom Fields**:
-    - **Tipo**: Feature | Improvement | Technical Debt | Bugfix
-    - **Tamanho**: [ex: 1 Dia, 2 Dias, 4 Dias]
+### 4.1 Backend and API Contracts (when applicable)
 
-## 5. Task Quality Checklist
+- **Use case flow**: [request -> service -> persistence -> response]
+- **Endpoint/Event**: [method + route or event name]
+- **Request contract**:
 
-Before sending for validation, confirm all items:
+| Field | Type | Required | Validation | Notes |
+| ----- | ---- | -------- | ---------- | ----- |
+| [nome] | [string] | [Yes] | [min/max/format] | [details] |
 
-- [ ] Title is understandable without extra explanation.
-- [ ] Description is sufficient for implementation by another team member.
-- [ ] Implementation details are specific enough to avoid interpretation gaps.
+- **Response contract**:
+
+| Field | Type | Nullable | Source | Notes |
+| ----- | ---- | -------- | ------ | ----- |
+| [id] | [string] | [No] | [database/API] | [details] |
+
+- **Error contract**: [status codes, error shape, and conditions]
+
+### 4.2 Database Specification (mandatory when data impact exists)
+
+Database object names must follow project convention in Portuguese.
+
+#### Tables and Actions
+
+| Schema | Tabela | Acao (Create/Alter/Drop) | Motivo |
+| ------ | ------ | ------------------------ | ------ |
+| [public] | [alunos] | [Create] | [new enrollment flow] |
+
+#### Fields Specification
+
+| Tabela | Campo | Tipo SQL | Nullable | Default | PK | FK (ref) | Unique | Index | Notes |
+| ------ | ----- | -------- | -------- | ------- | -- | -------- | ------ | ----- | ----- |
+| [alunos] | [id] | [uuid] | [No] | [gen_random_uuid()] | [Yes] | [N/A] | [Yes] | [PK] | [primary key] |
+
+#### Constraints and Indexes
+
+- **Constraints**: [name, type, columns, behavior]
+- **Indexes**: [name, columns, type, reason]
+
+#### Migration and Data Safety
+
+- **Migration files**: [expected paths/names]
+- **Forward migration steps**: [ordered SQL changes]
+- **Rollback steps**: [safe revert strategy]
+- **Backfill strategy**: [if needed]
+- **Validation queries**: [queries to verify data integrity after migration]
+
+### 4.3 Frontend and UX Contracts (when applicable)
+
+- **Screens/routes affected**: [path/component]
+- **UI states**: [loading, empty, error, success]
+- **Field validations and messages**: [rules and UX feedback]
+- **Interaction and edge behavior**: [important transitions and limits]
+
+### 4.4 Cross-Cutting Constraints
+
+- **Security/authorization**: [rules]
+- **Performance expectations**: [latency/volume expectations]
+- **Observability**: [logs/metrics/traces required]
+- **Compatibility constraints**: [versioning, rollout window]
+
+## 5. Implementation Steps
+
+1. [Step 1 with concrete change]
+2. [Step 2 with concrete change]
+3. [Step 3 with validation or integration]
+
+## 6. Acceptance Criteria
+
+- [AC1: observable behavior]
+- [AC2: observable behavior]
+- [AC3: failure or edge behavior]
+
+## 7. Test Scenarios
+
+- [Scenario 1: happy path]
+- [Scenario 2: validation or error path]
+- [Scenario 3: edge case path]
+
+## 8. Definition of Ready (to start Step 4)
+
+A task is ready for implementation only if:
+
+- [ ] Status is `Ready`.
+- [ ] Scope is explicit and bounded.
+- [ ] Required contracts are defined (API, DTO, event, UI state, schema).
+- [ ] Technical specification is detailed enough for independent implementation.
+- [ ] For data-impact tasks, table/field/type/constraint/index/migration details are fully documented.
 - [ ] Acceptance criteria are testable.
-- [ ] Test scenarios cover happy path, failure path, and edge cases (when applicable).
-- [ ] Type is Task or Bug only.
-- [ ] Priority and estimate are defined.
-- [ ] Labels and custom fields are filled.
-- [ ] Dependencies are explicit.
-- [ ] Task size is balanced for Gitflow (1 task = 1 healthy branch cycle).
+- [ ] Open questions are resolved or captured as explicit assumptions.
+- [ ] All dependency tasks are `Done` (if any dependencies exist).
 
-## 5.1 Definition of Ready (Dev Handoff)
+## 9. Definition of Done
 
-A task is ready for development only if:
+- [ ] Status moved to `Done`.
+- [ ] All related tests (unit and integration) pass — no test failures allowed.
+- [ ] **Section 10 (Test Evidence) is filled** with the exact command(s) executed and their output summary proving all tests pass.
+- [ ] Biome reports zero warnings and zero errors on all changed files.
+- [ ] Acceptance criteria are validated by tests or clear verification evidence.
 
-- Scope is explicit and bounded.
-- Required contracts are defined (API, DTO, events, UI states, or schema changes).
-- Acceptance criteria can be validated in code review and tests.
-- Open questions are resolved or captured as explicit assumptions.
-- Dependencies are either completed or clearly sequenced.
+## 10. Test Evidence
 
-## 5.2 Snippet Guidance (Optional)
+This section is **mandatory** before marking the task as `Done`. Paste the exact test command(s) executed and a summary of their output. If tests were not executed, this section must remain empty and the task **cannot** transition to `Done`.
 
-Use snippets only to remove ambiguity. Good candidates:
+| # | Command | Result | Timestamp |
+| - | ------- | ------ | --------- |
+| 1 | `[exact command]` | [e.g., Tests: 12 passed, 0 failed] | [YYYY-MM-DD HH:MM] |
 
-- API request/response examples.
-- DTO/interface skeletons.
-- Validation rule examples.
-- UI state mapping examples.
+**Rules**:
+- Every test suite relevant to the task must have a row in this table.
+- "Result" must include pass/fail/skip counts copied from actual terminal output.
+- If any test fails, the task stays `In Progress` — do not fill this section with failing results and mark Done.
+- This section is never pre-filled during Step 3 (Task Breakdown) — it is populated only during Step 4 (Implementation).
+- [ ] Edge cases listed in this task are covered.
+- [ ] Links to changed files/PR/tests are registered.
+- [ ] Feature spec and plan traceability remains intact.
 
-Avoid:
-
-- Large code blocks.
-- Full implementations.
-- Snippets that conflict with existing ADRs or project conventions.
-
-## 6. Branching Guidance (Gitflow)
-
-Use this guidance during task breakdown:
-
-- Prefer one branch per task.
-- Branch name pattern suggestion: `feature/<jira-key>-<short-title>` or `bugfix/<jira-key>-<short-title>`.
-- A task is too large when it likely needs many days of isolated development, high conflict risk, or multiple unrelated changes.
-- A task is too small when it does not create independently reviewable value and only increases branch management overhead.
-- Split by technical boundary when needed: API contract, backend service, frontend module, integration, tests.
-
-## 7. Jira Mapping (Based on Team Pattern)
-
-Map each task to Jira fields in this minimum set:
+## 10. Jira Mapping (Optional)
 
 - **Issue Type**: Task or Bug
-- **Summary**
-- **Description**
-- **Priority**
-- **Labels**
-- **Assignee** (optional at import time)
-- **Sprint** (optional)
-- **Parent** (if using parent/epic structure)
-- **Custom field (Tipo)**
-- **Custom field (Tamanho)**
+- **Summary**: [Short Jira title]
+- **Description**: [Implementation objective]
+- **Priority**: Highest | High | Medium | Low
+- **Labels**: [Backend, Frontend, Integration, etc.]
+- **Custom field (Tipo)**: Feature | Improvement | Technical Debt | Bugfix
+- **Custom field (Tamanho)**: [ex: 1 Dia, 2 Dias, 4 Dias]
 
-Recommended optional fields when available:
+## 11. Status Log
 
-- Start date
-- Components
-- Fix versions
+Record status transitions to keep execution history visible.
 
-## 8. Final Output of This Spec
+| Date       | Status      | Notes |
+| ---------- | ----------- | ----- |
+| YYYY-MM-DD | Draft       | Task created from approved feature plan |
+| YYYY-MM-DD | Awaiting Dependency | Task approved; waiting for [TYYY] to complete |
+| YYYY-MM-DD | Ready       | All dependencies met; ready for implementation |
+| YYYY-MM-DD | In Progress | Implementation started |
+| YYYY-MM-DD | Done        | Implementation and validation completed |
 
-This spec is complete when:
+## 12. Observations
 
-- Task breakdown is done.
-- Validation gate is passed.
+Capture runtime observations during implementation — environment issues, library surprises, deviations from plan, workarounds applied, or any other notes that don't fit in other sections. This section feeds into the feature retrospective (Step 5).
+
+- [Observation 1]
+- [Observation 2]

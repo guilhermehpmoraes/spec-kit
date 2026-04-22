@@ -6,25 +6,25 @@ Accepted
 
 ## Context
 
-The team needs practical guidance for design patterns that fit the active stack profile and experience level. The goal is to use a small set of patterns consistently, avoiding over-engineering while keeping code extensible.
+The team needs practical guidance for design patterns that fit the current stack and experience level. The goal is to use a small set of patterns consistently, avoiding over-engineering while keeping code extensible.
 
 ## Decision
 
 We adopt a small baseline of patterns and delay advanced patterns until real need appears.
 
-### Backend (Framework-Agnostic)
+### Backend (NestJS)
 
-- **Domain/module boundaries** as primary organization strategy.
-- **Request/Application/Persistence separation** (for example Controller-Service-Repository where applicable).
-- **Explicit contracts + validation** for input/output boundaries.
+- **Module pattern** as primary boundary by domain.
+- **Controller-Service-Repository** for request handling, business orchestration, and persistence separation.
+- **DTO + validation** for explicit API contracts.
 - **Adapter pattern** for external providers/integrations.
 
-### Frontend (Framework-Agnostic)
+### Frontend (React)
 
-- **Data/Presentation split (lightweight)**:
+- **Container/Presentational split (lightweight)**:
     - container components handle data orchestration,
     - presentational components focus on rendering and interaction.
-- **Reusable state/effect abstractions** aligned with the frontend framework.
+- **Custom hooks** for reusable state and side-effect logic.
 - **Composition over inheritance** for UI reuse.
 
 ### Shared Packages

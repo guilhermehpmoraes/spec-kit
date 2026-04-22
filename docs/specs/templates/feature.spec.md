@@ -1,10 +1,17 @@
 # Feature Spec: [Feature Name]
 
 - **Feature ID**: [###-feature-name]
-- **Status**: Draft
+- **Status**: Draft | Approved | In Planning | Planned | In Implementation | Done | Archived
 - **Created**: [YYYY-MM-DD]
-- **Owner**: [Name or Team]
-- **Domain**: [Domain name from project context]
+- **Last Updated**: [YYYY-MM-DD]
+- **Owner**: [Auto-filled from `git config user.name` of the person who creates this spec]
+- **Domain**: [Domain name — must match a spec in `docs/specs/domains/<domain>.md`]
+- **Application**: [Application name — admin, satie, etc.]
+- **Source Inputs**: [Request text, design doc, requirement links]
+- **Feature Folder**: [docs/specs/features/<feature-id>/]
+- **Feature File**: [docs/specs/features/<feature-id>/feature.spec.md]
+- **Plan File**: [docs/specs/features/<feature-id>/plan.spec.md or TBD]
+- **Task Folder**: [docs/specs/features/<feature-id>/tasks/]
 - **Related ADRs**: [ADR-001, ADR-00X or N/A]
 
 ## 1. Context
@@ -56,15 +63,15 @@ Describe the problem in plain language and why this feature matters now.
 - **FR-002**: System MUST [capability]
 - **FR-003**: Users MUST be able to [interaction]
 
-## 4.1 Engineering Quality Constraints
+## 5. Engineering Quality Constraints
 
 - **EQ-001 (KISS)**: The implementation MUST prefer the simplest design that satisfies all acceptance scenarios.
 - **EQ-002 (Self-descriptive code)**: New code MUST be understandable through naming and structure without relying on comments.
 - **EQ-003 (Comments policy)**: Comments MUST be added only for non-obvious intent, tradeoffs, or constraints.
-- **EQ-004 (Testability)**: Boundaries and responsibilities MUST enable focused unit/integration tests.
+- **EQ-004 (Testability)**: Boundaries and responsibilities MUST enable focused unit and integration tests.
 - **EQ-005 (Patterns baseline)**: Design choices MUST follow current ADR baseline unless explicitly justified.
 
-## 5. Dependencies and Risks
+## 6. Dependencies and Risks
 
 ### Dependencies
 
@@ -74,12 +81,12 @@ Describe the problem in plain language and why this feature matters now.
 
 - [Risk description] -> [Mitigation]
 
-## 6. Success Criteria
+## 7. Success Criteria
 
 - **SC-001**: [Measurable outcome]
 - **SC-002**: [Measurable outcome]
 
-## 7. Validation Mapping
+## 8. Validation Mapping
 
 Map each acceptance criterion to tests before implementation starts.
 
@@ -92,7 +99,66 @@ Also map engineering constraints to validation checks.
 - **EQ-002/EQ-003** -> [Code review checklist]
 - **EQ-004** -> [Unit/integration test coverage target]
 
-## 8. Optional Data Impact
+## 9. Planning Inputs for Step 2
+
+Use this section to make Step 2 deterministic.
+
+### Affected Areas
+
+- [Backend modules, frontend routes, shared packages, database tables, infra, QA]
+
+### Proposed Implementation Slices
+
+- [Slice 1: core backend change]
+- [Slice 2: frontend integration]
+- [Slice 3: validation, tests, rollout]
+
+### Contracts and Constraints
+
+- [API endpoints, DTOs, UI states, schema constraints, external integrations]
+
+### Technical Detail Baseline (Step 2 Input)
+
+Capture enough technical detail so each generated task can be implemented without hidden context.
+
+- **Database changes (if applicable)**: [tables, columns, SQL types, nullability, defaults, PK/FK, indexes, constraints]
+- **API contracts (if applicable)**: [endpoint, method, request fields/types, response fields/types, error cases]
+- **UI contracts (if applicable)**: [states, transitions, validations, empty/error states]
+- **Migration notes (if applicable)**: [forward migration, rollback strategy, backfill, compatibility]
+
+### Known Dependencies
+
+- [Service, API, package, team dependency]
+
+### Open Questions to Resolve in Planning
+
+- [Question 1]
+- [Question 2]
+
+## 10. Workflow and Status Gates
+
+### Status Transition Rules
+
+- On creation in Step 1, set **Status** to `Draft` and save the feature spec file.
+- After user approval, update **Status** to `Approved`.
+- When Step 2 starts, update **Status** to `In Planning`.
+- After feature plan approval and task file generation, update **Status** to `Planned`.
+- When implementation of the first task starts, update **Status** to `In Implementation`.
+- After all scoped tasks are done and validated, update **Status** to `Done`.
+
+### Gate to move Step 1 -> Step 2
+
+- [ ] Scope and requirements are approved.
+- [ ] Acceptance scenarios are testable.
+- [ ] Planning inputs are complete enough to derive tasks.
+
+### Gate to move Step 2 -> Step 3
+
+- [ ] Feature plan is approved.
+- [ ] Task files are generated under `docs/specs/features/<feature-id>/tasks/`.
+- [ ] At least one task has status `Ready`.
+
+## 11. Optional Data Impact
 
 Fill this section only if the feature changes domain data.
 
@@ -104,7 +170,7 @@ Fill this section only if the feature changes domain data.
 
 - [Migration, constraints, consistency, ownership notes]
 
-## 9. Fixed Learnings Input (SDD Evolution)
+## 12. Fixed Learnings Input (SDD Evolution)
 
 Complete this section after finishing the feature.
 

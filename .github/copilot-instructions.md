@@ -233,3 +233,35 @@ This workspace has the **Context7 MCP** available (`mcp_context7_resolve-library
 - Do NOT rely solely on training data for API signatures, configuration options, decorator usage, or migration guides — verify against current docs via Context7.
 - During **planning** (Step 2) and **task implementation** (Step 4), consult Context7 for every library-specific decision: correct decorator syntax, module configuration, query/mutation patterns, test utilities, CLI flags, etc.
 - When a library version is ambiguous or a breaking change is suspected, resolve it through Context7 before proceeding.
+
+## MCP Usage Policy In SDD Flow
+
+When a relevant MCP exists for the task, prefer it over ad hoc manual exploration or generic alternatives.
+
+### GitKraken MCP
+
+- Use GitKraken MCP when the task depends on Git workflow context, issue context, launchpad prioritization, review flow, or structured commit composition.
+- In SDD, use it when starting work from an issue, reviewing PR-oriented work, inspecting assigned work, or organizing commits when the user asks to commit.
+- Prefer GitKraken issue and review tools over manual Git-only exploration when the task is really about issue, PR, or work context rather than local file edits.
+
+### GitHub MCP
+
+- Use GitHub MCP when the task requires remote repository information or remote repository actions.
+- This includes repository search, issue lookup, PR lookup, comments, releases, remote file operations, or other GitHub-hosted context needed to plan or execute work.
+- In SDD, use it whenever feature or task context comes from GitHub issues or PRs, or when progress needs to be reflected back into GitHub artifacts.
+
+### Playwright MCP
+
+- Use Playwright MCP whenever the task involves browser behavior, UI validation, end-to-end verification, or reproduction of a web flow.
+- Do not wait for an explicit "use Playwright" request if browser automation is the right validation tool.
+- In SDD Step 4 and Step 5, prefer Playwright MCP for validating frontend flows, API docs UIs, authenticated browser journeys, and regressions that are best checked in a real browser.
+
+### Context7 MCP
+
+- Context7 remains mandatory for library, framework, and tool documentation lookups as described above.
+
+### Practical Rule
+
+- Step 1 to Step 3: use GitHub, GitKraken, and Context7 whenever the feature, plan, or task depends on remote issue context, review context, or current library documentation.
+- Step 4: use Context7 for implementation decisions, GitHub and GitKraken for issue or PR context when needed, and Playwright for browser-based validation.
+- Step 5: use GitKraken or GitHub when retrospective, review, PR, or issue closure work depends on those systems.

@@ -20,7 +20,7 @@ Replace Git Flow with a **custom SDD-aligned branching strategy** managed by the
 
 ```
 main                                          ← production-ready
-      └── develop                                 ← integration branch (default)
+  └── develop (currently: sandbox)            ← integration branch
         └── feature/<feature-id>              ← created at Step 1 (feature spec)
               └── task/<task-id>              ← created at Step 4 (task implementation)
 ```
@@ -29,16 +29,16 @@ main                                          ← production-ready
 
 | Branch Type | Pattern | Example |
 |-------------|---------|---------|
-| Integration | configurable, default `develop` | `develop` |
-| Feature | `feature/<feature-id>` | `feature/001-billing-authentication` |
-| Task | `task/<task-id>` | `task/T001-setup-auth` |
+| Integration | `develop` (or `sandbox` during bootstrap) | `develop` |
+| Feature | `feature/<feature-id>` | `feature/001-admin-identity-domain` |
+| Task | `task/<task-id>` | `task/T001-setup-typeorm` |
 
 - `<feature-id>` matches the feature folder name under `docs/specs/features/`.
-- `<task-id>` matches the task spec filename prefix (e.g., `T001-setup-auth` from `T001-setup-auth.task.spec.md`).
+- `<task-id>` matches the task spec filename prefix (e.g., `T001-setup-typeorm` from `T001-setup-typeorm.task.spec.md`).
 
 ### Integration Branch Configuration
 
-The default integration branch is `develop`. Projects may choose a different integration branch during initialization, but the active branch must be configured in the skill and documented in project-level docs.
+The default integration branch is `develop`. During the bootstrap phase, `sandbox` is used as the integration branch. The active integration branch is configured in the skill and can be changed without modifying the workflow.
 
 ### Lifecycle Tied to SDD Steps
 
@@ -71,7 +71,7 @@ The default integration branch is `develop`. Projects may choose a different int
 - **SDD-aligned** — Branch lifecycle mirrors the spec workflow exactly, reducing cognitive overhead.
 - **Clear history** — Each task and feature is visible as a merge commit with references to spec files.
 - **No external tooling** — Uses plain `git` commands; no `git-flow` CLI dependency.
-- **Flexible integration branch** — The naming can match the project's actual release strategy.
+- **Flexible integration branch** — Easy to switch from `sandbox` to `develop` when ready.
 
 ### Negative
 

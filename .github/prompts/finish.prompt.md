@@ -37,6 +37,7 @@ Before starting the retrospective, read and internalize:
 8. The application architecture spec at `docs/specs/apps/<app>/architecture.md`
 9. The domain spec if referenced (check `docs/specs/domains/`)
 10. The project `README.md` at the repository root — developer-facing guide for setup, init, and operation
+11. If retrospective findings depend on remote review, issue, or PR context, fetch that evidence with the GitHub or GitKraken MCP before proposing process changes
 
 ## Retrospective process
 
@@ -51,6 +52,7 @@ Before asking questions, present a concise summary of the completed feature:
 5. **Deviations detected** — scan all task spec status logs and implementation notes for any deviations from the original plan. List them explicitly.
 6. **New ADRs created** during this feature (if any)
 7. **New patterns introduced** — any architectural or code patterns that appeared for the first time
+8. **Tooling signals** — note where GitKraken, GitHub, Playwright, or Context7 meaningfully reduced ambiguity or where they should have been used but were skipped
 
 ### Phase 2 — Targeted retrospective questions
 
@@ -156,3 +158,4 @@ After user approval:
 - **Ask, don't assume** — the retrospective is a conversation. Do not invent answers or skip user input.
 - **Preserve what works** — only change what has clear evidence of needing improvement.
 - **One cycle at a time** — improvements apply to the next feature, not retroactively to past features.
+- **MCP-aware retrospectives** — when tooling usage affected delivery quality, capture that explicitly and prefer concrete guidance updates over vague reminders.

@@ -42,6 +42,10 @@ Before writing the plan, you MUST perform technical verification.
 
 **Context7 documentation lookup**: For every library, framework, or tool referenced in the feature spec or relevant to the plan (NestJS, TypeORM, TanStack Router, TanStack Query, Vite, Tailwind, Playwright, Jest, etc.), use the Context7 MCP (`mcp_context7_resolve-library-id` → `mcp_context7_get-library-docs`) to fetch current documentation. Verify API signatures, decorator usage, configuration options, and migration patterns against the latest docs — do not rely on training data alone.
 
+**GitHub and GitKraken remote context lookup**: If the feature, plan input, or existing docs reference GitHub issues, pull requests, comments, or review decisions, use the GitHub or GitKraken MCP to fetch the canonical remote context before locking the plan.
+
+**Playwright browser verification**: If the plan affects frontend behavior, routes, forms, e2e flows, or UX regressions, use the Playwright MCP to inspect the current browser behavior and encode that verified behavior into the plan instead of relying on assumptions.
+
 1. **Resolve all "Open Questions to Resolve in Planning"** from the feature spec (section 9). For each question, either:
    - Find the answer by exploring the codebase, ADRs, docs, or Context7 library documentation → include the resolution in the plan.
    - Cannot determine the answer → ask the user.

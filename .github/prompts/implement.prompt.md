@@ -64,6 +64,8 @@ Before starting implementation:
 3. Read the task's **Section 4 — Technical Specification** for contracts, schemas, and constraints.
 4. Explore the current codebase to understand existing patterns, module structure, and conventions.
 5. If anything in the task spec is ambiguous, contradictory, or incomplete — **ask the user before proceeding**. Do not guess or make assumptions about unclear requirements.
+6. If the task depends on remote issue or PR context, fetch it with the GitHub or GitKraken MCP before implementing.
+7. If the task changes browser-visible behavior, inspect the current flow with the Playwright MCP before editing so the expected behavior is grounded in evidence.
 
 ### Phase 2 — Implementation
 
@@ -73,10 +75,13 @@ Execute the implementation steps from the task spec (Section 5) in order. For ea
 2. **Follow existing codebase patterns** — match the style, structure, and conventions already in use.
 3. **Follow naming conventions** — Portuguese for database/entity names, English for all other code (ADR-005).
 4. **Use Context7 documentation lookup** when implementing library-specific code (NestJS decorators, TypeORM entities, TanStack patterns, etc.) — verify API signatures and configuration against current docs.
-5. **Create files and directories** as specified in the task's affected paths.
-6. **Write tests** as specified in Section 7 — Test Scenarios. Follow existing test patterns in the codebase.
-7. **Run tests** after writing them to verify they pass.
-8. **Run linting** to ensure code quality compliance.
+5. **Use Playwright MCP** when implementing or validating browser-visible behavior, route transitions, forms, or e2e flows.
+6. **Use GitKraken MCP** when you need repository status, diff, branch, worktree, or PR awareness during implementation.
+7. **Use GitHub MCP** when implementation depends on remote issue, pull request, review, or release context.
+8. **Create files and directories** as specified in the task's affected paths.
+9. **Write tests** as specified in Section 7 — Test Scenarios. Follow existing test patterns in the codebase.
+10. **Run tests** after writing them to verify they pass.
+11. **Run linting** to ensure code quality compliance.
 
 ### Phase 3 — Validation
 
@@ -130,5 +135,8 @@ After successful validation:
 - **Naming conventions are non-negotiable** — Portuguese for DB/entities, English for everything else (ADR-005).
 - **Self-sufficiency principle** — the task spec should contain everything needed. If it doesn't, that's a gap to flag, not to fill silently.
 - **Context7 documentation lookup**: For every library-specific implementation (NestJS modules, TypeORM entities, guards, interceptors, TanStack queries, Tailwind config, etc.), use Context7 MCP to verify correctness against current documentation.
+- **Playwright validation** — when frontend or e2e behavior changes, use Playwright MCP to validate the real browser flow instead of relying only on static code inspection.
+- **GitHub and GitKraken context** — when issue, PR, review, branch, or repository-state context matters, use the GitHub or GitKraken MCP surfaces rather than guessing.
+- **SDD skills remain mandatory** — `sdd-branch` still governs branch lifecycle steps and `sdd-commit` still governs commit composition and approval.
 - **Test coverage** — implement all test scenarios from Section 7. Do not skip tests.
 - **Atomic progress** — update status transitions as they happen. Mark `In Progress` when starting, `Done` when finished.

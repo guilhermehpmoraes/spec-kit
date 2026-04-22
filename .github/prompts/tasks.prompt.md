@@ -58,6 +58,7 @@ Before starting task breakdown, read and internalize:
    - Dependencies between tasks
    - Parallelization opportunities
    - Brief scope summary per task
+   - Which tasks should explicitly call for Context7, Playwright, GitHub, or GitKraken MCP usage during implementation
 
 **Ask the user**: "Does this task breakdown look correct? Should I adjust any scope, ordering, or grouping before generating the task files?"
 
@@ -136,3 +137,5 @@ If the user confirms tasks are ready:
 - **Self-sufficiency is non-negotiable** — a developer must be able to implement a task using only that task file, the feature spec, and the plan. No hidden context.
 - **Naming conventions**: Follow project conventions — Portuguese for database/entity names, English for all other code and documentation (ADR-005).
 - **Context7 documentation lookup**: When generating implementation steps (Section 5) that reference specific library APIs, decorators, configuration, or CLI commands, use the Context7 MCP (`mcp_context7_resolve-library-id` → `mcp_context7_get-library-docs`) to verify correctness against current documentation. Do not rely on training data alone for library-specific details.
+- **Playwright browser validation**: When a task changes browser-visible behavior, routes, forms, rendered states, or e2e flows, include Playwright MCP-driven validation in Section 5 or Section 7.
+- **GitHub and GitKraken context**: When a task depends on issue, PR, review, branch, or repository-state context, encode the relevant GitHub or GitKraken MCP checks directly in the task instead of assuming that context will be remembered later.

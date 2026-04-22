@@ -33,6 +33,7 @@ Create a complete feature spec draft with status `Draft`, following the project'
    - `.github/copilot-instructions.md`
    - `docs/specs/templates/feature.spec.md`
    - Relevant ADRs in `docs/decisions/` (including ADR-004 for domain/application context)
+   - If the feature request references a GitHub issue, PR, or review discussion, fetch that remote context with the GitHub or GitKraken MCP before drafting the spec.
 
 2. Ask pertinent refinement questions **before finalizing the spec** to reduce ambiguity. Prioritize questions about:
    - Problem and business value
@@ -43,6 +44,7 @@ Create a complete feature spec draft with status `Draft`, following the project'
    - Technical constraints and dependencies
    - Measurable success criteria
    - Data, API, and UI impacts
+   - Use Playwright MCP when the feature depends on current browser behavior, rendered states, or UX regressions that should be verified instead of inferred.
 
 3. If information remains missing after questions, record explicit assumptions in the spec and flag gaps in "Open Questions to Resolve in Planning".
 
@@ -77,6 +79,7 @@ Update an existing `Draft` feature spec with new information provided by the use
    - `.github/copilot-instructions.md`
    - `docs/specs/templates/feature.spec.md`
    - Relevant ADRs referenced in the spec
+   - If the refinement is driven by a GitHub issue, PR, or review thread, refresh that remote context with the GitHub or GitKraken MCP before updating the draft.
 
 3. Identify which sections of the spec are affected by the user's new input.
 

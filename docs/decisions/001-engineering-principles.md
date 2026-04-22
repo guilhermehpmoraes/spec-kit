@@ -10,7 +10,7 @@ The project needs a simple and explicit engineering baseline that is easy to app
 
 ## Decision
 
-We adopt the following baseline engineering principles for projects that use this kit.
+We adopt the following baseline engineering principles for all code in Satie.
 
 1. KISS first.
 2. Self-descriptive code over comments.

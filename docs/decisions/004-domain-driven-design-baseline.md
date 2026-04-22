@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-The repository may host one or more applications or services. As projects grow, we need:
+The repository hosts multiple platforms (applications), starting with Admin and Satie. The initial documentation and architecture framed everything around Satie as the primary product. As the project grows, we need:
 
 1. A repo-wide architecture that is platform-agnostic — not centered on a single product.
 2. A clear distinction between **applications** (platforms) and **domains** (DDD bounded contexts).
@@ -16,7 +16,7 @@ The repository may host one or more applications or services. As projects grow, 
 
 ### Applications vs. Domains
 
-- **Applications** are deployable products or runtime surfaces.
+- **Applications** are the deployable platforms: `apps/admin/`, `apps/satie/`, etc. Each has its own `backend/` and `frontend/`.
 - **Domains** follow Domain-Driven Design principles. Each domain is a bounded context that encapsulates a coherent problem area within an application.
 - Domains are **scoped to a single application**. A domain does not span multiple apps. If two apps share concepts, they do so through shared contracts in `packages/`, not by sharing a domain.
 

@@ -4,24 +4,6 @@
 
 This project follows **Spec Driven Development (SDD)**. Every feature, module, or architectural change starts from a spec before any code is written.
 
-### Bootstrap Mode (`docs/init.md`)
-
-If `docs/init.md` exists and the user is adapting this kit to a new project, run the initialization workflow before Step 1.
-
-Initialization is a one-time bootstrap operation used to:
-
-- define the real project identity and repository shape
-- configure stack, languages, runtimes, and tooling
-- generalize or scope ADRs correctly
-- update foundational docs to describe the actual project
-
-Initialization is complete only when:
-
-1. foundational docs reflect the target project rather than the template
-2. stack-specific decisions are scoped correctly
-3. stale example material is archived, removed, or clearly left as reference
-4. `docs/init.md` is deleted
-
 ### Workflow
 
 1. **Spec first** — Before writing code, check `docs/specs/` for the relevant spec. If none exists, create or update one.
@@ -97,6 +79,17 @@ Triggered by **Step 5 — Feature Finish**. Run a short retrospective and evolve
 
 Keep this lightweight: prefer small, evidence-based changes over large process rewrites.
 
+## MCP Usage in SDD
+
+This workspace has four MCP surfaces that should be used deliberately during the SDD workflow: **GitKraken**, **GitHub**, **Playwright**, and **Context7**.
+
+- **Do not replace mandatory SDD skills** with MCPs when a skill is explicitly required. `sdd-branch` still governs branch lifecycle steps, and `sdd-commit` still governs commit composition and approval.
+- **Step 1 — Feature Spec Draft**: If the request references a GitHub issue, pull request, review thread, or discussion, use the GitHub or GitKraken MCP to fetch the canonical remote context before drafting or refining the spec. Use Playwright MCP when the feature request depends on understanding current browser behavior, screens, or UX regressions. Use Context7 if the feature scope depends on concrete library or framework constraints.
+- **Step 2 — Feature Plan**: Always use Context7 for library, framework, and tooling decisions. Use Playwright MCP to inspect current UI flows, routes, forms, and rendered states when planning frontend or e2e work. Use GitHub or GitKraken MCP to pull linked issue or PR discussions, acceptance notes, and repository state when those affect the plan.
+- **Step 3 — Task Breakdown**: Carry MCP-backed findings into the task specs. If a task requires browser validation, record Playwright-driven validation in the implementation steps or test scenarios. If a task depends on issue, PR, or review context, encode the relevant GitHub or GitKraken findings directly in the task.
+- **Step 4 — Task Implementation**: Use Context7 for library-specific implementation details, Playwright MCP for browser validation and UI reproduction, GitKraken MCP for repository status, diff, branch, and PR awareness, and GitHub MCP for remote issue or pull request context when needed. Prefer MCP-backed repository and browser inspection over assumptions.
+- **Step 5 — Feature Finish**: Use GitHub or GitKraken MCP to review PR feedback, outstanding follow-ups, merge context, and other remote delivery signals that matter to the retrospective. Use Playwright MCP if retrospective findings involve browser validation gaps or UI regressions.
+
 ### Reading specs
 
 - Start with `docs/project.spec.md` for high-level project understanding.
@@ -137,28 +130,30 @@ This ensures that architectural decisions, domain boundaries, and project-level 
 
 ## Project Context
 
-- This repository is a reusable SDD kit that may back a single project, a monorepo, or a mixed-language workspace.
-- Applications and services are runtime surfaces; domains are optional bounded contexts documented when useful (see ADR-004).
-- When the workspace is a monorepo, apps and shared packages should be documented explicitly in architecture docs.
-- Each application or service can have its own architecture spec at `docs/specs/apps/<app>/`.
-- Domain specs live in `docs/specs/domains/` when the project uses them.
+- This monorepo hosts multiple **applications** (platforms), each with its own backend and frontend under `apps/<application>/`.
+- Applications are not domains — they are products containing multiple DDD bounded-context domains (see ADR-004).
+- Current applications: **Admin** (internal operations tool) and **Satie** (school data platform).
+- Nx monorepo: apps in `apps/`, shared packages in `packages/`.
+- Each application has its own architecture spec at `docs/specs/apps/<app>/`.
+- Domain specs live in `docs/specs/domains/` and are linked from feature specs.
 
 ## Stack
 
-- Stack choices are project-specific and must be documented during initialization.
-- Preferred defaults for many projects using this kit:
-   - monorepo with Nx when multiple apps or packages are expected
-   - pnpm for JavaScript and TypeScript workspaces
-   - Biome for supported frontend and JS/TS surfaces
-- Mixed-language workspaces are valid. Example: Java backend with Biome on frontend only.
-- App or service architecture docs are the source of truth for framework-specific guidance.
+- **Backend**: NestJS
+- **Frontend**: Vite + React + TanStack Router + TanStack Query + Tailwind CSS
+- **Database**: PostgreSQL + TypeORM (with SnakeNamingStrategy)
+- **Cache/Ephemeral**: Redis
+- **Shared DB package**: `@satie/database` (base entity, TypeORM config, naming strategy)
+- **Testing**: Jest + Supertest (backend), Vitest + React Testing Library (frontend), Playwright (e2e)
+- **Package manager**: pnpm
+- **CI**: AWS-based
 
 ## Naming Conventions
 
-- Naming conventions are project-specific and must be documented explicitly.
-- If different layers use different naming languages or casing rules, record them in architecture docs or ADRs.
-- Do not assume the current project uses database naming in the same language as source code.
-- Docs, specs, and ADRs should remain clear and consistent in one chosen documentation language.
+- **Database** (tables, columns, indexes, constraints): Portuguese
+- **TypeORM entity classes and properties**: Portuguese (consistent with DB schema, see ADR-005)
+- **Source code** (all other layers — services, controllers, DTOs, modules, guards, variables): English
+- **Docs, specs, ADRs**: English
 
 ## Commit Conventions
 
@@ -181,7 +176,7 @@ Refs: <task-spec-path>
 
 This project uses an **SDD-aligned branching strategy** (ADR-009) managed by the `sdd-branch` skill. Git Flow CLI is **not** used.
 
-- **Integration branch**: configurable per project, defaulting to `develop` unless documented otherwise
+- **Integration branch**: `sandbox` (will become `develop` after bootstrap phase)
 - **Feature branches**: `feature/<feature-id>` — created from the integration branch at Step 1
 - **Task branches**: `task/<task-id>` — created from the feature branch at Step 4
 - **Feature numbering**: choose the next `feature-id` by inspecting both `docs/specs/features/` and existing local/remote `feature/*` branches; use the next unused numeric prefix so folders and branches stay aligned.
@@ -195,14 +190,17 @@ This project uses an **SDD-aligned branching strategy** (ADR-009) managed by the
 - Check `docs/decisions/` for rationale behind current patterns.
 - When proposing a new library or pattern, suggest creating an ADR first.
 
-### Code Quality Compliance (Mandatory)
+### Biome Compliance (Mandatory)
 
-After writing or modifying source code, run the quality checks required by the active stack and resolve **all** relevant warnings and errors before considering the change complete.
+After writing or modifying any source code, run Biome and resolve **all** warnings and errors before considering the change complete:
 
-- Prefer Biome where it is supported and already established for the project.
-- If the stack requires another tool for a surface, use the documented tool for that surface.
-- Do not mark a task as `Done` with outstanding quality failures on changed code.
-- In Nx workspaces, prefer a workspace-scoped validation command such as `pnpm nx run-many -t check` when that target exists.
+```bash
+pnpm nx run-many -t check
+```
+
+- Never leave code in a non-compliant state — warnings are not acceptable.
+- If Biome reports issues, fix them immediately as part of the current task.
+- Do not mark a task as `Done` with outstanding Biome warnings or errors.
 
 ### Test Pass Gate (Mandatory)
 
@@ -213,7 +211,7 @@ A task MUST NOT be marked `Done` unless **all** related tests pass — both unit
 - If any test fails, the task stays `In Progress` until all failures are resolved.
 - Never mark a Definition of Done checkbox as complete if the corresponding tests have not been executed and verified as passing.
 - When a task includes test scenarios in its spec, every listed scenario must have a passing test.
-- **Environment failures are NOT a reason to skip tests.** If the required environment is not running or is misconfigured and tests cannot execute, **stop immediately** and alert the user to fix the environment. Do not proceed with marking the task as Done.
+- **Environment failures are NOT a reason to skip tests.** If the development environment (Docker services, database, Redis, etc.) is not running or misconfigured and tests cannot execute, **stop immediately** and alert the user to fix the environment. Do not proceed with marking the task as Done.
 - Never silently skip, ignore, or assume test results — every test run must produce visible, verified output.
 
 ### Test Evidence Gate (Mandatory)
@@ -229,39 +227,7 @@ Every task spec contains a **Section 10 — Test Evidence** table. This section 
 
 This workspace has the **Context7 MCP** available (`mcp_context7_resolve-library-id`, `mcp_context7_get-library-docs`).
 
-- **Always use Context7** to fetch up-to-date documentation before writing or planning code that depends on any library, framework, or tool in the active stack.
+- **Always use Context7** to fetch up-to-date documentation before writing or planning code that depends on any library, framework, or tool in the stack (NestJS, TypeORM, TanStack Router, TanStack Query, Vite, Tailwind CSS, Playwright, Jest, Vitest, React Testing Library, Biome, etc.).
 - Do NOT rely solely on training data for API signatures, configuration options, decorator usage, or migration guides — verify against current docs via Context7.
 - During **planning** (Step 2) and **task implementation** (Step 4), consult Context7 for every library-specific decision: correct decorator syntax, module configuration, query/mutation patterns, test utilities, CLI flags, etc.
 - When a library version is ambiguous or a breaking change is suspected, resolve it through Context7 before proceeding.
-
-## MCP Usage Policy In SDD Flow
-
-When a relevant MCP exists for the task, prefer it over ad hoc manual exploration or generic alternatives.
-
-### GitKraken MCP
-
-- Use GitKraken MCP when the task depends on Git workflow context, issue context, launchpad prioritization, review flow, or structured commit composition.
-- In SDD, use it when starting work from an issue, reviewing PR-oriented work, inspecting assigned work, or organizing commits when the user asks to commit.
-- Prefer GitKraken issue and review tools over manual Git-only exploration when the task is really about issue, PR, or work context rather than local file edits.
-
-### GitHub MCP
-
-- Use GitHub MCP when the task requires remote repository information or remote repository actions.
-- This includes repository search, issue lookup, PR lookup, comments, releases, remote file operations, or other GitHub-hosted context needed to plan or execute work.
-- In SDD, use it whenever feature or task context comes from GitHub issues or PRs, or when progress needs to be reflected back into GitHub artifacts.
-
-### Playwright MCP
-
-- Use Playwright MCP whenever the task involves browser behavior, UI validation, end-to-end verification, or reproduction of a web flow.
-- Do not wait for an explicit "use Playwright" request if browser automation is the right validation tool.
-- In SDD Step 4 and Step 5, prefer Playwright MCP for validating frontend flows, API docs UIs, authenticated browser journeys, and regressions that are best checked in a real browser.
-
-### Context7 MCP
-
-- Context7 remains mandatory for library, framework, and tool documentation lookups as described above.
-
-### Practical Rule
-
-- Step 1 to Step 3: use GitHub, GitKraken, and Context7 whenever the feature, plan, or task depends on remote issue context, review context, or current library documentation.
-- Step 4: use Context7 for implementation decisions, GitHub and GitKraken for issue or PR context when needed, and Playwright for browser-based validation.
-- Step 5: use GitKraken or GitHub when retrospective, review, PR, or issue closure work depends on those systems.

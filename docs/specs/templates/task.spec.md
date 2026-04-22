@@ -70,19 +70,19 @@ If a subsection does not apply, explicitly write `N/A` and explain why.
 
 ### 4.2 Database Specification (mandatory when data impact exists)
 
-Database or persistence object names must follow the active project convention documented in architecture docs or ADRs.
+Database object names must follow project convention in Portuguese.
 
 #### Tables and Actions
 
 | Schema | Tabela | Acao (Create/Alter/Drop) | Motivo |
 | ------ | ------ | ------------------------ | ------ |
-| [public] | [resource_name] | [Create] | [why this object changes] |
+| [public] | [alunos] | [Create] | [new enrollment flow] |
 
 #### Fields Specification
 
 | Tabela | Campo | Tipo SQL | Nullable | Default | PK | FK (ref) | Unique | Index | Notes |
 | ------ | ----- | -------- | -------- | ------- | -- | -------- | ------ | ----- | ----- |
-| [resource_name] | [id] | [uuid/int/varchar/etc.] | [No] | [default or N/A] | [Yes] | [N/A] | [Yes] | [PK] | [primary key] |
+| [alunos] | [id] | [uuid] | [No] | [gen_random_uuid()] | [Yes] | [N/A] | [Yes] | [PK] | [primary key] |
 
 #### Constraints and Indexes
 
@@ -167,7 +167,7 @@ This section is **mandatory** before marking the task as `Done`. Paste the exact
 - [ ] Links to changed files/PR/tests are registered.
 - [ ] Feature spec and plan traceability remains intact.
 
-## 11. Jira Mapping (Optional)
+## 10. Jira Mapping (Optional)
 
 - **Issue Type**: Task or Bug
 - **Summary**: [Short Jira title]
@@ -177,7 +177,7 @@ This section is **mandatory** before marking the task as `Done`. Paste the exact
 - **Custom field (Tipo)**: Feature | Improvement | Technical Debt | Bugfix
 - **Custom field (Tamanho)**: [ex: 1 Dia, 2 Dias, 4 Dias]
 
-## 12. Status Log
+## 11. Status Log
 
 Record status transitions to keep execution history visible.
 
@@ -189,7 +189,7 @@ Record status transitions to keep execution history visible.
 | YYYY-MM-DD | In Progress | Implementation started |
 | YYYY-MM-DD | Done        | Implementation and validation completed |
 
-## 13. Observations
+## 12. Observations
 
 Capture runtime observations during implementation — environment issues, library surprises, deviations from plan, workarounds applied, or any other notes that don't fit in other sections. This section feeds into the feature retrospective (Step 5).
 

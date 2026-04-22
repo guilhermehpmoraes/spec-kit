@@ -20,5 +20,13 @@
 - DON'T USE for: basic generator syntax (`nx g @nx/react:app`), standard commands, things you already know
 - The `nx-generate` skill handles generator discovery internally - don't call nx_docs just to look up generator syntax
 
+## Additional MCP Usage
+
+- Use Context7 MCP before writing plans, tasks, or implementation that depends on library/framework APIs, decorators, config, or CLI behavior.
+- Use Playwright MCP whenever a task depends on understanding or validating real browser behavior, rendered UI states, navigation, forms, or e2e flows.
+- Use GitKraken MCP for repository inspection in the SDD flow: status, diffs, branches, worktrees, pull/push operations, Launchpad, and PR triage.
+- Use GitHub MCP when the SDD workflow depends on remote GitHub artifacts such as issues, pull requests, comments, reviews, releases, or assigned work.
+- These MCPs complement the mandatory `sdd-branch` and `sdd-commit` skills; they do not replace them.
+
 
 <!-- nx configuration end-->

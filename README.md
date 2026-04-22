@@ -1,103 +1,164 @@
-# Personal Spec Kit
+# Satie
 
-Reusable Spec Driven Development kit for personal projects. The goal is to keep the workflow, templates, and decision discipline stable while allowing each new project to define its own stack, language mix, architecture, and delivery defaults.
+Monorepo for the **Admin** and **Satie** platforms. Built with Nx, NestJS, React, PostgreSQL, and Redis.
 
-This repository is the kit itself, not a single product codebase. Some existing docs under `docs/specs/` reflect a real reference project and should be treated as examples, not as hard requirements for future projects.
+## Prerequisites
 
-## What Stays Stable
+- **Node.js** (see `.nvmrc` or `package.json` for version)
+- **pnpm** 10.x+
+- **Docker** and **Docker Compose** (V2)
 
-- Spec-first delivery flow: feature -> plan -> tasks -> implementation -> retrospective
-- ADR-based decision tracking
-- Checklist-gated status transitions
-- Feature/task branching aligned with specs
-- Strong planning artifacts before implementation
-- Test evidence and validation gates before marking work done
+## Getting Started
 
-## What Is Configurable Per Project
+### 1. Install dependencies
 
-- Monorepo or single-repo structure
-- Nx, plain workspaces, or another build/orchestration tool
-- Backend and frontend stacks
-- Database and infrastructure choices
-- Naming conventions by layer
-- Code quality tooling
-- CI/CD model
-
-## Preferred Defaults
-
-These are defaults, not hard requirements:
-
-- Monorepo is the default mental model
-- Nx is the preferred monorepo orchestration when it fits
-- Biome is the preferred formatter/linter when the target language supports it well
-- Mixed-tooling setups are allowed when the stack demands it
-
-Example: in a Java + frontend project, backend quality tooling may use the Java ecosystem while frontend keeps Biome.
-
-## Init Workflow
-
-When using this kit in a new project, start with a one-time initialization pass.
-
-1. Define the project context: product, repo shape, apps or services, languages, frameworks, databases, test stack, CI, naming conventions, and code quality tooling.
-2. Ask Copilot to run the initialization using `docs/init.md`.
-3. Update the core Markdown files with the new project defaults and constraints.
-4. Create or update app-specific architecture docs under `docs/specs/apps/` as needed.
-5. Keep only the ADRs that are truly baseline decisions; move stack-specific choices to app-level docs or project-specific ADRs.
-6. After initialization is complete, delete `docs/init.md` so the repository returns to normal operating mode.
-
-## Core Structure
-
-```text
-docs/
-  init.md                       temporary bootstrap instructions for a new project
-  architecture.md               repo-wide architecture baseline
-  project.spec.md               high-level project or workspace spec
-  decisions/                    reusable ADRs and project-wide decisions
-  specs/
-    README.md                   guidance for active specs vs reference material
-    apps/<app>/                 app or service specific architecture docs
-    domains/                    optional bounded-context specs
-    features/<feature-id>/      feature spec, plan, and task files
-    templates/                  canonical spec templates
-.github/
-  copilot-instructions.md       operating rules for SDD execution in this repo
+```bash
+pnpm install
 ```
 
-## SDD Flow
+### 2. Set up environment variables
 
-The delivery flow remains the same across projects:
+```bash
+cp .env.example .env
+```
 
-| Step | Purpose | Main Output |
-|------|---------|-------------|
-| 1 — Feature Spec | Define the problem and scope | `feature.spec.md` |
-| 2 — Feature Plan | Define the implementation approach | `plan.spec.md` |
-| 3 — Task Breakdown | Split into implementation-ready units | `tasks/TXXX-*.task.spec.md` |
-| 4 — Task Implementation | Execute one approved task | Code + tests + updated task spec |
-| 5 — Feature Finish | Capture learnings and improve the kit | Updated specs, templates, or ADRs |
+Edit `.env` as needed. The defaults work for local development with Docker Compose.
 
-## Rules
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_HOST` | `localhost` | PostgreSQL host |
+| `DATABASE_PORT` | `5432` | PostgreSQL port |
+| `DATABASE_USER` | `satie` | PostgreSQL user |
+| `DATABASE_PASSWORD` | `satie` | PostgreSQL password |
+| `DATABASE_NAME` | `satie_dev` | PostgreSQL database |
+| `REDIS_HOST` | `localhost` | Redis host |
+| `REDIS_PORT` | `6379` | Redis port |
+| `JWT_SECRET` | — | Secret key for JWT signing (required) |
+| `JWT_ACCESS_EXPIRY` | `15m` | Access token lifetime |
+| `JWT_REFRESH_EXPIRY` | `7d` | Refresh token lifetime |
+| `ADMIN_SEED_EMAIL` | `admin@satie.local` | Super-admin seed email |
+| `ADMIN_SEED_PASSWORD` | — | Super-admin seed password (required for seed migration) |
+| `APP_ENVIRONMENT` | `dev` | Environment label used to derive master username and database name prefixes for educational groups (`dev` or `prod`) |
 
-- No production code in Steps 1 through 3
-- Plans and tasks must be implementation-ready, not vague outlines
-- A task is not done until tests have been executed and recorded as evidence
-- Code quality must be enforced with the tooling chosen for the target stack
-- Core docs should stay generic; stack-specific instructions belong in the project or app that owns them
+### 3. Start infrastructure (PostgreSQL + Redis)
 
-## Suggested Use In A New Project
+```bash
+docker compose up -d
+```
 
-1. Copy this kit into the new repository.
-2. Run the init workflow described in `docs/init.md`.
-3. Replace generic placeholders with the project's real stack and constraints.
-4. Archive or remove reference material that does not apply.
-5. Start Step 1 of SDD for the first real feature.
+Services:
 
-## Reference Material
+| Service | Image | Port |
+|---------|-------|------|
+| PostgreSQL | `postgres:17.4` | `5432` |
+| Redis | `redis:latest` | `6379` |
 
-The current repository also contains reference examples from an existing Nx-based product setup. They are useful as patterns, especially for:
+Data persists via named volumes (`satie_pgdata`, `satie_redisdata`). To reset:
 
-- Nx monorepo organization
-- Spec packages under `docs/specs/features/`
-- App-specific architecture docs
-- ADR evolution over time
+```bash
+docker compose down -v
+```
 
-Use them as examples when helpful, but do not treat their stack choices as mandatory for future projects.
+### 4. Run database migrations
+
+```bash
+pnpm exec typeorm migration:run -d apps/admin/backend/src/config/typeorm.config.ts
+```
+
+This creates all domain tables:
+- **Identity**: `usuario_admin` (+ super-admin seed)
+- **Subscription**: `produto`, `permissao`, `plano`, `plano_permissao`
+- **Educational Group**: `grupo_educacional`, `usuario_mestre`, `parametros_grupo_educacional`, `usuario_comum`, `assinatura`
+
+### 5. Start the Admin backend
+
+```bash
+pnpm nx serve backend
+```
+
+The API runs at `http://localhost:3000/api`. API docs (Scalar) at `http://localhost:3000/api/docs`.
+
+## Running Tests
+
+```bash
+# Backend unit tests
+pnpm nx run backend-tests:test
+
+# Backend integration/e2e tests (requires Docker services running)
+pnpm nx run backend-tests:e2e
+
+# All checks (Biome lint + format)
+pnpm nx run-many -t check
+```
+
+## Project Structure
+
+```
+apps/
+  admin/
+    backend/           NestJS API (Identity, Subscription, and Educational Group domains)
+    backend-tests/     Jest + Supertest tests
+    frontend/          Vite + React UI
+    frontend-tests/    Playwright tests
+packages/
+  database/            @satie/database — shared base entity, TypeORM config, Redis module
+  database-tests/      Unit tests for @satie/database
+  utils/               @satie/utils — slug generation, random password, environment naming helpers
+  utils-tests/         Unit tests for @satie/utils
+docs/
+  architecture.md      Repo-wide architecture
+  project.spec.md      High-level project spec
+  specs/               Feature, plan, task, domain, and app specs
+  decisions/           ADRs (architectural decision records)
+```
+
+## Workflow (SDD)
+
+This project follows **Spec Driven Development**. Every feature starts from a spec before code is written. The full workflow rules live in `.github/copilot-instructions.md`, and templates in `docs/specs/templates/`.
+
+### Delivery Flow
+
+The SDD flow has 5 steps, each driven by a Copilot prompt:
+
+| Step | Prompt | Input | Output |
+|------|--------|-------|--------|
+| 1 — Feature Spec | `/feature` | Feature description (text) or existing `feature-id` to refine | `feature.spec.md` in `Draft` |
+| 2 — Feature Plan | `/plan <feature-id>` | Approved feature spec | `plan.spec.md` with technical details, DB schemas, API contracts |
+| 3 — Task Breakdown | `/tasks <feature-id>` | Approved plan | One `T<NNN>-*.task.spec.md` per task, each with full implementation detail |
+| 4 — Implementation | `/implement <feature-id> <task-id>` | Ready task spec | Production code, tests, task status → `Done` |
+| 5 — Retrospective | `/finish <feature-id>` | All tasks `Done` | Retrospective findings, process improvements applied |
+
+### How to Use
+
+1. **Start a feature**: run `/feature` with a description of the problem/requirement. Review and approve the generated spec.
+2. **Plan**: run `/plan <feature-id>`. Answer technical questions. Review and approve the plan.
+3. **Break into tasks**: run `/tasks <feature-id>`. Confirm the proposed task list. Review generated task files.
+4. **Implement**: run `/implement <feature-id> <task-id>` for each task (in dependency order). Each task produces code + tests and offers to commit.
+5. **Close the feature**: run `/finish <feature-id>` after all tasks are done. Answer retrospective questions and approve process improvements.
+
+### Artifact Structure
+
+```
+docs/specs/features/<feature-id>/
+  feature.spec.md
+  plan.spec.md
+  tasks/
+    T001-<short-title>.task.spec.md
+    T002-<short-title>.task.spec.md
+    ...
+```
+
+### Rules
+
+- **No production code** in Steps 1–3 (spec/plan/tasks only).
+- Tasks must have enough technical detail for any dev to implement without extra context.
+- A task cannot be marked `Done` unless all tests pass and Biome reports zero issues.
+- When Steps 1–2 run in plan mode, materialize approved artifacts in a separate write-enabled chat before implementing.
+
+## Conventions
+
+- **Database** (tables, columns, constraints, indexes): Portuguese
+- **TypeORM entity classes and properties**: Portuguese (ADR-005)
+- **Source code** (services, controllers, DTOs, modules, guards): English
+- **Docs, specs, ADRs**: English
+- **Commits**: Conventional Commits + Gitmoji

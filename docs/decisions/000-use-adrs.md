@@ -15,7 +15,7 @@ We will use Architecture Decision Records (ADRs) to capture significant architec
 ### Format
 
 - Each ADR is a Markdown file in `docs/decisions/`.
-- Files are numbered sequentially: `NNN-short-title.md` (e.g., `001-backend-framework-choice.md`).
+- Files are numbered sequentially: `NNN-short-title.md` (e.g., `001-use-nestjs-backend.md`).
 - Each ADR follows the template below.
 
 ### Template

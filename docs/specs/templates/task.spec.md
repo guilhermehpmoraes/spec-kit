@@ -42,6 +42,7 @@ Rules for this team:
 - **Plan slice**: [Setup | Foundational | Slice A | Slice B | QA | Polish]
 - **Requirement refs**: [FR-001, FR-002, AC-001, AC-002]
 - **Affected Paths**: [Exact file paths or folders]
+- **Design References**: [`.pen` file, node IDs, screen/component names, or N/A]
 - **Why this task exists**: [Dependency, scenario, or risk reduction]
 
 ## 4. Technical Specification (Required)
@@ -100,6 +101,10 @@ Database object names must follow project convention in Portuguese.
 ### 4.3 Frontend and UX Contracts (when applicable)
 
 - **Screens/routes affected**: [path/component]
+- **Pencil references**: [`.pen` file path, screen node IDs, component catalog references]
+- **Shared component reuse/creation**: [existing shared component to reuse or new shared component required]
+- **Theme/token impact**: [global CSS variables, semantic tokens, spacing, typography]
+- **Responsive behavior**: [mobile-first rules, breakpoints, layout changes]
 - **UI states**: [loading, empty, error, success]
 - **Field validations and messages**: [rules and UX feedback]
 - **Interaction and edge behavior**: [important transitions and limits]
@@ -138,6 +143,7 @@ A task is ready for implementation only if:
 - [ ] Required contracts are defined (API, DTO, event, UI state, schema).
 - [ ] Technical specification is detailed enough for independent implementation.
 - [ ] For data-impact tasks, table/field/type/constraint/index/migration details are fully documented.
+- [ ] For UI-impact tasks, approved Pencil references are linked and implementation scope matches them.
 - [ ] Acceptance criteria are testable.
 - [ ] Open questions are resolved or captured as explicit assumptions.
 - [ ] All dependency tasks are `Done` (if any dependencies exist).
@@ -149,6 +155,7 @@ A task is ready for implementation only if:
 - [ ] **Section 10 (Test Evidence) is filled** with the exact command(s) executed and their output summary proving all tests pass.
 - [ ] Biome reports zero warnings and zero errors on all changed files.
 - [ ] Acceptance criteria are validated by tests or clear verification evidence.
+- [ ] If UI is impacted, delivered screens/components match the approved Pencil artifact or the deviation is documented and re-approved in planning.
 
 ## 10. Test Evidence
 

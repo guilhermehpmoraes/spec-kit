@@ -2,242 +2,137 @@
 
 ## Purpose
 
-This document gives a stable, high-level view of how the monorepo is organized. It covers the system boundaries, major components, and how the main layers relate to each other across all applications.
+This document describes the default architectural baseline for repositories initialized with this Spec Kit. It is intentionally **stack-agnostic** and should be refined during project init to match the selected technologies and repository shape.
 
-Detailed tradeoffs and significant technical choices belong in ADRs under `docs/decisions/`. Each application has its own detailed architecture spec at `docs/specs/apps/<app>/architecture.md`.
+Detailed tradeoffs and long-lived decisions belong in ADRs under `docs/decisions/`.
 
-## System Context
+## Architecture Modes
 
-This monorepo hosts multiple platforms (applications). Each platform is a full-stack product with its own backend and frontend. The first two applications are:
+Each initialized project should choose one of these modes:
 
-| Application | Description |
-|-------------|-------------|
-| **Admin** | Internal administrative platform — client, product, and feature management; usage dashboards and metrics. |
-| **Satie** | Centralized data platform for schools — school structure visualization, dashboards, and reports. |
+| Mode | Meaning |
+| ---- | ------- |
+| Keep baseline | Use the default Spec Kit structure with minimal changes |
+| Adapt baseline | Keep the overall flow and layout, but customize stack- or repo-specific areas |
+| Replace baseline | Keep SDD and templates, but define a different project structure |
 
-## Guiding Principles
+## Repository Baseline
 
-- Keep source code in English, database names in Portuguese, and all documentation (specs, ADRs, prompts, skills) in English.
-- Prefer clear boundaries between domains instead of a single shared model.
-- Keep backend APIs explicit and stable so frontend and integrations evolve independently.
-- Record significant architectural decisions in ADRs before or alongside implementation.
-- Follow Domain-Driven Design to organize problem spaces within each application (see ADR-004).
+The default repository bias is an **Nx monorepo**, especially when the project contains multiple apps or shared packages. That said, the kit is not limited to JavaScript or TypeScript stacks.
 
-## Repository Layout
+Default layout:
 
 ```text
 apps/
   <application>/
-    backend/       NestJS API for the application
-    backend-tests/ Tests for the backend
-    frontend/      Vite + React UI for the application
-    frontend-tests/ Tests for the frontend
+    backend/
+    backend-tests/
+    frontend/
+    frontend-tests/
+    mobile/
 packages/
-  database/        @satie/database — shared base entity, TypeORM config, naming strategy
-  database-tests/  Unit/integration tests for @satie/database
-  shared libs, UI components, utilities, contracts
-dist/
-  apps/<application>/backend/    Backend build output
-  apps/<application>/frontend/   Frontend build output
-  packages/<package>/            Package build output
+  <shared-lib>/
 docs/
-  architecture.md          repo-wide architecture (this file)
-  project.spec.md          high-level project spec
+  architecture.md
+  project.spec.md
+  decisions/
   specs/
-    apps/<app>/            per-app detailed architecture and specs
-    domains/               domain specs (DDD bounded contexts)
-    features/<feature-id>/ feature, plan, and task specs
-    templates/             spec templates
-  decisions/               ADRs
+    apps/
+    domains/
+    features/
+    templates/
+design/
+  pencil/
+    components.pen
+    features/
 ```
 
-## Conventions
+Projects can adapt this layout when needed. For example, a Java backend may live under `apps/<application>/backend/` while an Angular frontend lives under `apps/<application>/frontend/`, or the repo may keep a different folder organization while still following the same SDD flow.
 
-### Dependency Management (Single Version Policy)
+## System Boundaries
 
-All third-party dependencies are declared exclusively in the root `package.json`. Sub-project `package.json` files contain only metadata (`name`, `version`, `private`, entry points, and Nx config) — no `dependencies`, `devDependencies`, or `peerDependencies` for external packages.
+### Applications / Products
 
-This ensures:
+Applications are deployable products or major services. A project may contain one or many applications.
 
-- A single source of truth for all dependency versions across the monorepo.
-- No nested `node_modules` inside sub-projects.
-- Consistent runtime behavior — all projects resolve the same version of every package.
+### Domains / Modules
 
-When adding a new dependency, add it to the root `package.json` and run `pnpm install`. Nx traces actual source code imports to determine the project dependency graph, so `package.json` declarations in sub-projects are not needed for Nx to work correctly.
+When the problem benefits from DDD, domains should be scoped as bounded contexts and documented in `docs/specs/domains/`. If DDD is not needed, the same documentation structure can be used for modules, services, or functional areas.
 
-See ADR-006 (`docs/decisions/006-single-version-dependency-policy.md`) for rationale and trade-offs.
+### Shared Packages
 
-### Project Naming (ADR-008)
+Cross-application assets should live in shared packages or shared modules. Typical examples:
 
-All projects follow a consistent naming scheme:
+- UI/component libraries
+- design tokens and theme contracts
+- API contracts and DTOs
+- utility libraries
+- infrastructure helpers
 
-- **`package.json` names** use the `@satie/` scope: `@satie/admin-backend`, `@satie/admin-frontend`, `@satie/database`, etc.
-- **`project.json` names** (used by Nx) drop the scope but include the application prefix: `admin-backend`, `admin-frontend`, `database`, etc.
-- **All Nx configuration** (`targets`, `implicitDependencies`, `tags`, etc.) lives exclusively in `project.json` — never in a `package.json` `nx` key.
-- **Cross-references** in Nx config use the Nx project name (e.g., `admin-backend:build`, not `@satie/admin-backend:build`).
+## Frontend Architecture Baseline
 
-When adding a new application or package, follow these patterns. See ADR-008 (`docs/decisions/008-project-naming-conventions.md`) for the full naming table and rationale.
+If the project has frontend scope, this kit assumes the following defaults unless init overrides them:
 
-### Test Project Separation
+- **Mobile-first** layout and interaction design
+- A **shared component library** for reuse across all apps
+- **Reusable and configurable components** instead of many nearly identical variants
+- A **global CSS/theme layer** with shared tokens such as primary, secondary, tertiary colors
+- A **Pencil component catalog** so shared components can be reviewed visually
+- **Pencil-first UI planning**: feature plans that affect UI must create or update `.pen` artifacts before implementation starts
 
-Tests are kept in dedicated sibling projects rather than alongside source code:
+The planning output for UI features should identify:
 
-| Source Project | Test Project |
-|----------------|--------------|
-| `apps/<app>/backend` | `apps/<app>/backend-tests` |
-| `apps/<app>/frontend` | `apps/<app>/frontend-tests` |
-| `packages/<lib>` | `packages/<lib>-tests` |
+- the `.pen` file to use
+- the screens/routes/components covered by the design
+- shared components to reuse or extend
+- responsive behavior, with mobile as the starting breakpoint
+- theme/token changes required for implementation
 
-Test projects declare an `implicitDependencies` on their source project in `project.json`, ensuring Nx runs tests when the source changes.
+## Backend and Integration Baseline
 
-#### Test Project TypeScript Configuration
+Backend architecture is project-specific and may use different languages or frameworks. The baseline expectation is only that it remains explicit enough to support planning and task generation.
 
-Test projects import source code directly from their sibling source project via relative paths (e.g., `../<source>/src/**/*.ts`). This gives tests full access to internal types without an intermediate build step. To make this work, every test project's `tsconfig.json` applies a set of mandatory overrides:
+Document in project-specific architecture specs:
 
-| Setting | Value | Reason |
-|---------|-------|--------|
-| `rootDir` | `".."` | Common ancestor covering both source and test directories. |
-| `composite` | `false` | Test projects are leaf nodes — not referenced by other projects. |
-| `declaration`, `declarationMap`, `emitDeclarationOnly` | `false` | No declaration output needed. |
-| `noEmit` | `true` | Type-checking only; SWC (Jest) or Vite (Vitest) transpiles at runtime. |
-| `experimentalDecorators`, `emitDecoratorMetadata` | `true` | Required when source uses NestJS/TypeORM decorators (backend tests). |
-| `strictPropertyInitialization` | `false` | Avoids false positives on decorator-initialized DTOs and entities. |
-| `types` | `["jest", "node"]` or `["vitest", "node"]` | Exposes test framework globals. |
+- main runtime/framework choices
+- service/module boundaries
+- persistence strategy
+- integration contracts
+- test strategy by layer
 
-**Important:** Test files must **not** import `describe`, `it`, `beforeEach`, or `afterEach` from `node:test`. Jest and Vitest provide these as globals. Importing from `node:test` shadows them and breaks `expect`/`jest`/`vi`.
-
-See ADR-007 (`docs/decisions/007-test-project-typescript-configuration.md`) for full rationale, per-project-type variations, and rules.
-
-### Centralized Build Output
-
-All build artifacts are output to the workspace root `dist/` directory, mirroring the source layout:
-
-- Backend: `dist/apps/<application>/backend/`
-- Frontend: `dist/apps/<application>/frontend/`
-- Packages: `dist/packages/<package>/`
-
-This keeps source directories clean and simplifies CI artifact collection. Configure `outDir` in `tsconfig.app.json` / `tsconfig.lib.json` and build tool configs (webpack, vite) to point to the root `dist/` path.
-
-## Applications and Domains
-
-### Applications
-
-Applications are the deployable platforms. Each application has its own `backend/` and `frontend/` under `apps/<application>/`. Applications are not domains — they are products that contain multiple domains.
-
-### Domains (DDD Bounded Contexts)
-
-Domains follow Domain-Driven Design principles. Each domain is a bounded context that encapsulates a coherent problem area within an application. Key rules:
-
-- **Domains are scoped to a single application.** A domain does not span multiple apps.
-- **Each application organizes its own domain code internally.** There is no enforced folder convention across apps.
-- **Domain specs** are documented in `docs/specs/domains/` and linked from feature specs for development context.
-- If two applications share concepts, they do so through shared contracts in `packages/`, not by sharing a domain.
-
-### Documentation Hierarchy
+## Documentation Hierarchy
 
 | Level | Location | Purpose |
-|-------|----------|---------|
-| Repo-wide | `docs/architecture.md` | System boundaries, layers, cross-cutting concerns |
-| Per-app | `docs/specs/apps/<app>/architecture.md` | Internal architecture, domain map, conventions |
-| Domain | `docs/specs/domains/<domain>.md` | Bounded context, entities, rules, invariants |
-| Feature | `docs/specs/features/<feature-id>/` | Spec, plan, tasks for a specific feature |
+| ----- | -------- | ------- |
+| Repo-wide | `docs/project.spec.md` | stack profile, project-level constraints, and init baseline |
+| Repo-wide | `docs/architecture.md` | architectural shape, boundaries, and cross-cutting rules |
+| Per-app | `docs/specs/apps/<app>/architecture.md` | app-specific architecture and conventions |
+| Domain/module | `docs/specs/domains/<domain>.md` | bounded context or module documentation |
+| Feature | `docs/specs/features/<feature-id>/` | feature spec, plan, and tasks |
 
-## Logical Layers
+## Decision Process
 
-### Presentation Layer
+Use ADRs for decisions that change the long-term shape of the system, including:
 
-The frontend handles user interaction, routing, page composition, and query orchestration. It should not contain domain rules that belong on the server.
+- architecture structure
+- repository conventions
+- branching workflow
+- API documentation standards
+- stack-specific patterns that should become defaults
 
-### Application Layer
+Current baseline references in this kit:
 
-The backend exposes use cases through NestJS modules, controllers, services, and repositories. This layer coordinates validation, orchestration, and persistence.
-
-### Domain Layer
-
-Each domain owns its rules, entities, and invariants. Shared abstractions live in `packages/` only when they are truly cross-application.
-
-### Persistence Layer
-
-PostgreSQL is the primary system of record. Database schema changes should be reviewed as part of the feature spec and tracked explicitly when they alter domain data.
-
-All entities inherit from `EntidadeBase` (defined in `@satie/database`) which provides audit fields (`criado_por`, `modificado_por`, `criado_as`, `modificado_as`) and soft-delete fields (`deletado_as`, `deletado_por`). Tables are never physically deleted in normal operations.
-
-TypeORM with `SnakeNamingStrategy` enforces snake_case for all table and column names automatically. Entity classes are named in Portuguese for consistency with the database schema (see ADR-005).
-
-Redis is available for caching and ephemeral data (e.g., token revocation blacklists).
-
-## Cross-Cutting Concerns
-
-### Shared Contracts
-
-Use shared packages for types, validation schemas, UI primitives, and utility functions reused across applications.
-
-### Shared Database Package (`@satie/database`)
-
-The `packages/database/` package provides the foundational database layer shared by all applications:
-
-- `EntidadeBase` — auditable base entity with soft deletes (see ADR-005)
-- TypeORM configuration utilities and `SnakeNamingStrategy` setup
-- All backends import this package for database foundations; app-specific entities and migrations stay in each app
-
-### API Contracts
-
-Backend and frontend should agree on request and response shapes through shared contracts where it reduces duplication and mismatch risk.
-
-### Testing
-
-Testing follows the stack defined in the project:
-
-- Backend: Jest and Supertest
-- Frontend: Vitest and React Testing Library
-- End-to-end: Playwright
-
-## Data and Integration
-
-PostgreSQL is the authoritative store for operational data. Redis is used for ephemeral data such as token revocation and caching. External systems, imports, and synchronization flows should be documented per feature or domain as they are introduced.
-
-When a feature changes data shape or ownership, the corresponding spec should document:
-
-- affected entities
-- migration impact
-- consistency rules
-- rollback considerations
-
-## Architectural Decision Process
-
-Any significant choice that changes the system shape, introduces a new dependency, or establishes a long-lived pattern should be captured in an ADR.
-
-Current baseline ADRs:
-
+- `docs/decisions/000-use-adrs.md`
 - `docs/decisions/001-engineering-principles.md`
 - `docs/decisions/002-design-patterns-baseline.md`
-- `docs/decisions/003-biome-quality-tooling-baseline.md`
 - `docs/decisions/004-domain-driven-design-baseline.md`
-- `docs/decisions/005-database-conventions-shared-package.md`
-- `docs/decisions/006-single-version-dependency-policy.md`
-- `docs/decisions/007-test-project-typescript-configuration.md`
 - `docs/decisions/008-project-naming-conventions.md`
-
-## Non-Functional Expectations
-
-The architecture should continue to make room for:
-
-- clear authorization boundaries
-- observable backend behavior through logs and metrics
-- predictable performance for dashboard and reporting flows
-- accessible frontend experiences
-- maintainable migrations and rollback paths
+- `docs/decisions/009-sdd-branching-strategy.md`
+- `docs/decisions/010-scalar-api-documentation.md`
 
 ## Evolution Rules
 
-- Update this document when the system structure changes materially.
-- Update per-app architecture specs when application-specific structure changes.
-- Use ADRs for the why behind major decisions.
-- Use feature specs for the what and acceptance criteria.
-- Use implementation plans and tasks for the how.
-
-## Open Questions
-
-- Which initial domains should be formalized first for each application?
-- Which data ingestion strategy will become the default?
-- What should be shared across all applications versus kept local to each app?
+- Update this document when init changes the baseline architecture.
+- Update per-app architecture docs when an application needs more specific guidance.
+- Keep feature specs focused on feature intent and acceptance.
+- Keep plans and tasks detailed enough that implementation does not depend on hidden design decisions.

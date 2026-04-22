@@ -24,13 +24,15 @@ Describe the implementation approach for the approved feature with enough techni
 
 ## 3. Technical Context
 
-### Stack Baseline (Satie)
+### Project Stack Baseline
 
-- **Monorepo**: Nx + pnpm
-- **Backend**: NestJS
-- **Frontend**: Vite + React + TanStack Router + TanStack Query + Tailwind CSS
-- **Database**: PostgreSQL
-- **Tests**: Jest + Supertest, Vitest + React Testing Library, Playwright
+- **Repository shape**: [Nx monorepo | monorepo without Nx | multi-repo | other]
+- **Architecture mode**: [Keep baseline | Adapt baseline | Replace baseline]
+- **Backend stack**: [Framework/language or N/A]
+- **Frontend stack**: [Framework/language or N/A]
+- **Mobile stack**: [Framework/language or N/A]
+- **Data stack**: [Database/cache/queue or N/A]
+- **Testing stack**: [unit/integration/e2e tooling]
 
 ### Feature-Specific Context
 
@@ -44,6 +46,15 @@ Describe the implementation approach for the approved feature with enough techni
 - **Inputs**: [API payloads, events, forms, existing state]
 - **Outputs**: [API responses, UI states, writes, side effects]
 - **Boundary conditions**: [Invalid inputs, empty states, race conditions, retries]
+
+### Frontend Planning and Design Validation (Required when UI is impacted)
+
+- **Pencil file**: [exact `.pen` file path or N/A]
+- **Designed screens/routes**: [exact pages, routes, modals, flows]
+- **Shared component reuse/creation**: [component library scope]
+- **Theme/token impact**: [global CSS variables, semantic tokens, typography, spacing]
+- **Mobile-first validation notes**: [primary viewport assumptions and responsive behavior]
+- **Design approval note**: [how the design was reviewed/approved before implementation]
 
 ## 3.1 Technical Design Baseline (Required)
 
@@ -100,6 +111,7 @@ Must pass before the plan is approved and task breakdown (Step 3) can begin:
 - [ ] Dependencies are completed or properly sequenced.
 - [ ] Risks and edge cases are reviewed.
 - [ ] Technical design baseline is complete for all impacted layers.
+- [ ] If the feature changes UI, Pencil artifacts are created or updated and approved.
 
 ### Engineering Gates
 
@@ -148,6 +160,7 @@ Use this matrix to derive one task file per row.
 - If a task cannot be delivered safely in one branch cycle, split it before approval.
 - For data-impact tasks, include explicit table, field, SQL type, nullability, default, PK/FK, constraints, indexes, and migration notes.
 - For API/UI-impact tasks, include explicit request/response/UI state contracts.
+- For UI-impact tasks, include the exact `.pen` file and relevant screen/component references.
 
 ## 8. Repository Impact
 
@@ -170,6 +183,7 @@ docs/
 - **Backend**: [Modules, handlers, services, repositories, tests]
 - **Frontend**: [Routes, pages, components, queries, tests]
 - **Shared packages**: [Types, utilities, UI components]
+- **Design artifacts**: [Pencil files, component catalog updates, theme/token files]
 - **Database**: [Migrations, seeds, constraints]
 - **QA**: [Unit tests, integration tests, E2E tests, manual checks]
 
@@ -178,6 +192,7 @@ docs/
 - **Unit tests**: [What to cover]
 - **Integration tests**: [What flows/contracts to validate]
 - **E2E tests**: [Critical journeys]
+- **Design validation**: [Pencil approval, responsive/mobile review, component catalog review]
 - **Non-functional checks**: [Performance, accessibility, security checks if applicable]
 
 ## 10. Rollout and Safety

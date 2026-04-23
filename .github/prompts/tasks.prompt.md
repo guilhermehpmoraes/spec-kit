@@ -45,6 +45,7 @@ Before starting task breakdown, read and internalize:
    - **Module boundaries**: each distinct module (e.g., database package, auth module, users module) can be one or more tasks.
    - **Vertical slices**: when possible, group related backend + test work into a single task for a coherent deliverable.
    - **Documentation tasks**: ADR creation, domain spec creation, architecture doc updates — these are separate tasks.
+   - **Frontend design gates**: visually relevant UI implementation tasks depend on an approved Pencil prototype and should not be treated as code-only work.
 3. Each task must be **independently implementable and testable** — a developer should be able to pick up a single task file and complete it without needing to read other task files.
 4. Identify parallelization opportunities — mark tasks that have no mutual dependencies as parallelizable.
 
@@ -78,6 +79,7 @@ Every task MUST include the following at the level of detail specified. If a sec
 - **Section 4.1 — Backend and API Contracts**: Exact endpoint, method, request/response contracts with field names, types, validations, error codes and messages. Copy from the plan — do not summarize or shorten.
 - **Section 4.2 — Database Specification**: Exact table names, column names, SQL types, nullability, defaults, PK/FK, constraints, indexes, migration file names, forward/rollback steps. Copy from the plan — do not summarize or shorten.
 - **Section 4.3 — Frontend and UX Contracts**: Routes, components, states, field validations, interaction behavior. Copy from the plan when applicable.
+- For visually relevant UI tasks, include the approved Pencil reference, the relevant design token/theme references, and expected responsive behavior.
 - **Section 4.4 — Cross-Cutting Constraints**: Security, performance, observability, compatibility relevant to this specific task.
 - **Section 5 — Implementation Steps**: Concrete, ordered steps with exact file paths and changes. Not vague — a developer must know exactly what to create/modify.
 - **Section 6 — Acceptance Criteria**: Derived from the feature spec's acceptance scenarios. Map each relevant acceptance criterion to this task.
@@ -126,6 +128,7 @@ If task files already exist in the `tasks/` folder:
 
 If the user confirms tasks are ready:
 1. Change the specified task(s) `Status` from `Draft` to `Ready`.
+   - For visually relevant UI tasks, do this only if the task includes an approved Pencil reference.
 2. Confirm in the chat which tasks are now `Ready` and can proceed to Step 4 (Implementation).
 
 ## Critical rules
@@ -136,6 +139,7 @@ If the user confirms tasks are ready:
 - **Every task must pass Definition of Ready** — review Section 8 of the task template before saving each file.
 - **Self-sufficiency is non-negotiable** — a developer must be able to implement a task using only that task file, the feature spec, and the plan. No hidden context.
 - **Naming conventions**: Follow the project's documented naming and language conventions (ADR-005).
+- **Visually relevant UI tasks require design grounding** — if the plan lacks an approved Pencil reference, stop and fix the plan before marking the task `Ready`.
 - **Context7 documentation lookup**: When generating implementation steps (Section 5) that reference specific library APIs, decorators, configuration, or CLI commands, use the Context7 MCP (`mcp_context7_resolve-library-id` → `mcp_context7_get-library-docs`) to verify correctness against current documentation. Do not rely on training data alone for library-specific details.
 - **Playwright browser validation**: When a task changes browser-visible behavior, routes, forms, rendered states, or e2e flows, include Playwright MCP-driven validation in Section 5 or Section 7.
 - **GitHub and GitKraken context**: When a task depends on issue, PR, review, branch, or repository-state context, encode the relevant GitHub or GitKraken MCP checks directly in the task instead of assuming that context will be remembered later.

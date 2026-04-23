@@ -32,6 +32,8 @@ The consuming project should document its actual layout here after bootstrap. Ty
 ### Monorepo Example
 
 ```text
+design/
+  <artifacts-and-tokens>/
 apps/
   <app-or-service>/
 packages/
@@ -76,7 +78,7 @@ Projects may use some or all of the following building blocks. Keep only the one
 
 - **Deployable surfaces**: applications, services, workers, packages, libraries, CLIs, or jobs
 - **Capability boundaries**: domains, modules, bounded contexts, or feature areas
-- **Shared assets**: contracts, schemas, utilities, UI primitives, SDKs, or platform packages
+- **Shared assets**: contracts, schemas, utilities, UI primitives, design tokens, component libraries, SDKs, or platform packages
 - **Operational surfaces**: CI, infrastructure, migrations, observability, release automation
 
 ## Logical Layers
@@ -85,7 +87,7 @@ Use the sections below only when they fit the project. Remove or simplify them w
 
 ### Presentation Layer
 
-UI, API gateway, CLI, or externally facing delivery surface. Owns interaction flow and transport concerns.
+UI, API gateway, CLI, or externally facing delivery surface. Owns interaction flow and transport concerns. When the project has a frontend, this layer should also reflect the documented design system, responsive behavior, and approved design artifacts.
 
 ### Application Layer
 
@@ -108,6 +110,10 @@ Document the project's actual choices here after bootstrap:
 - test organization
 - build output conventions
 - API and contract ownership
+- frontend design artifact ownership and location
+- theme and token ownership
+- shared component and form library strategy
+- responsive design baseline
 - shared package or module strategy
 - observability requirements
 - security and authorization boundaries

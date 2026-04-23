@@ -46,6 +46,8 @@ Before writing the plan, you MUST perform technical verification.
 
 **Playwright browser verification**: If the plan affects frontend behavior, routes, forms, e2e flows, or UX regressions, use the Playwright MCP to inspect the current browser behavior and encode that verified behavior into the plan instead of relying on assumptions.
 
+**Pencil design verification**: If the plan affects frontend or UI behavior with meaningful visual or UX impact, use the Pencil MCP to create, inspect, or update the relevant prototype during planning. Do not approve the plan until the Pencil reference and approval state are recorded.
+
 1. **Resolve all "Open Questions to Resolve in Planning"** from the feature spec (section 9). For each question, either:
    - Find the answer by exploring the codebase, ADRs, docs, or Context7 library documentation → include the resolution in the plan.
    - Cannot determine the answer → ask the user.
@@ -84,7 +86,7 @@ After all questions are resolved:
 
 - **Data design**: Exact storage object names, field names, types, nullability, defaults, PK/FK or references, constraints, indexes, and migration strategy. Use the project's naming conventions (ADR-005).
 - **API contracts**: Exact endpoints, HTTP methods, request/response shapes with field names and types, validation rules, error codes and messages.
-- **UI contracts** (if applicable): Routes, component hierarchy, states (loading/empty/error/success), field validations, interaction behavior.
+- **UI contracts** (if applicable): Routes, component hierarchy, states (loading/empty/error/success), field validations, interaction behavior, responsive behavior, and Pencil prototype references when visual impact exists.
 - **File paths**: Exact files to create or modify — no vague references like "backend module". List actual paths.
 - **Dependencies**: Exact npm packages with versions (or "latest"), shared workspace packages, external services.
 
@@ -120,6 +122,7 @@ If a `plan.spec.md` already exists with status `Draft`:
 
 - Plan file saved at `docs/specs/features/<feature-id>/plan.spec.md` with status `Draft`.
 - Feature spec status updated to `In Planning`.
+- Frontend or UI plans with meaningful visual impact include a recorded Pencil prototype reference and approval state.
 - Show in the chat:
   - The `feature-id` and plan file path
   - Summary of questions asked and their resolutions

@@ -26,6 +26,7 @@ The bootstrap flow must:
    - stacks, frameworks, runtimes, and major libraries
    - package manager or build tool
    - testing and quality tools
+   - frontend design workflow, when a frontend exists
    - naming and language conventions
    - branch and release conventions
    - optional domain/application documentation structure
@@ -105,6 +106,7 @@ This kit expects deliberate use of MCP surfaces when they reduce ambiguity.
 - **Do not replace mandatory SDD skills** when a skill is explicitly required.
 - **Use Context7** for stack-specific APIs, framework configuration, or library behavior relevant to the actual project.
 - **Use Playwright** when the work depends on real browser-visible behavior.
+- **Use Pencil** when frontend or UI work depends on prototypes, design artifacts, tokens, or layout decisions.
 - **Use GitHub or GitKraken** when issues, PRs, reviews, releases, or repository state materially affect the work.
 
 ## Reading Order
@@ -167,6 +169,24 @@ After bootstrap, this section should record the actual project choices for:
 Do not assume Portuguese database names, English-only code, or any other hardcoded convention.
 
 After bootstrap, this section should document the project's naming matrix in line with ADR-005.
+
+## Frontend and Design Workflow
+
+If the project includes frontend work, bootstrap should document at least:
+
+- where design artifacts live (for example `design/`)
+- where reusable UI code lives (package, library, module, or equivalent)
+- where global theme and token definitions live
+- whether mobile-first is the default responsive posture
+- when Pencil is required for frontend or UI work
+
+Baseline rules for frontend/UI work:
+
+- Use Pencil for changes with meaningful visual or UX impact.
+- Frontend/UI plans with relevant visual impact should include an approved Pencil prototype before plan approval.
+- UI tasks should not move to `Ready` without an approved Pencil reference.
+- If implementation uncovers a meaningful visual change, update Pencil first and then replicate the change in code.
+- Do not let production code become the source of truth for unresolved design decisions.
 
 ## Commit Conventions
 

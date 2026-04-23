@@ -47,6 +47,12 @@ Ask the user for the real project context in one grouped batch. Cover at least:
 - languages, runtimes, frameworks, and key libraries
 - dependency/package/build tooling
 - test, lint, format, and static analysis tools
+- frontend design workflow when the project has UI work, including:
+	- where design artifacts and tokens live
+	- where reusable UI implementation code lives
+	- how global theme values are defined
+	- whether mobile-first is the default responsive baseline
+	- whether Pencil is required for visually relevant UI changes
 - naming and language conventions
 - branching and release conventions
 - whether the project uses domains, modules, bounded contexts, or another boundary model
@@ -68,6 +74,7 @@ Also create or update additional docs when needed, for example:
 
 - `docs/specs/apps/<surface>/architecture.md`
 - `docs/specs/domains/<domain>.md`
+- `design/` references or supporting docs when the project has a frontend design system baseline
 - setup or operations docs referenced by the README
 
 ## Bootstrap self-removal

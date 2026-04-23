@@ -25,7 +25,8 @@ Use glob matching to find the feature folder that starts with the feature number
 3. Read the feature plan at `docs/specs/features/<feature-id>/plan.spec.md`.
 4. Find and read the task spec matching the task ID under `docs/specs/features/<feature-id>/tasks/` (e.g. `T001-*.task.spec.md`).
 5. **If any file does not exist** → stop and inform the user. Suggest using the appropriate SDD step prompt (`/feature`, `/plan`, `/tasks`).
-6. **If the task Status is NOT `Ready`** → **stop** and inform the user. Only tasks with status `Ready` can be implemented. Show the current status and suggest:
+6. **If the task is a visually relevant UI task and does not reference an approved Pencil artifact** → stop and inform the user. The task must be updated before implementation.
+7. **If the task Status is NOT `Ready`** → **stop** and inform the user. Only tasks with status `Ready` can be implemented. Show the current status and suggest:
    - If `Draft` → ask the user to review and mark it as `Ready` first (via `/tasks` prompt or manually).
    - If `In Progress` → inform implementation is already underway.
    - If `Done` → inform the task is already completed.
@@ -43,7 +44,8 @@ Before writing any code, read and internalize:
 6. All ADRs referenced by the task spec in `docs/decisions/`
 7. The surface-specific architecture spec at `docs/specs/apps/<surface>/architecture.md` when the feature references one
 8. The domain/area spec if referenced (check `docs/specs/domains/`)
-9. Existing codebase files that will be modified (read them before editing)
+9. Any design references named in the task spec (for example Pencil artifacts, token docs, or design-system notes)
+10. Existing codebase files that will be modified (read them before editing)
 
 ## Dependency check
 
@@ -66,6 +68,7 @@ Before starting implementation:
 5. If anything in the task spec is ambiguous, contradictory, or incomplete — **ask the user before proceeding**. Do not guess or make assumptions about unclear requirements.
 6. If the task depends on remote issue or PR context, fetch it with the GitHub or GitKraken MCP before implementing.
 7. If the task changes browser-visible behavior, inspect the current flow with the Playwright MCP before editing so the expected behavior is grounded in evidence.
+8. If the task has an approved Pencil reference, inspect the relevant Pencil artifact before editing so the implementation is anchored to the approved design.
 
 ### Phase 2 — Implementation
 
@@ -82,6 +85,7 @@ Execute the implementation steps from the task spec (Section 5) in order. For ea
 9. **Write tests** as specified in Section 7 — Test Scenarios. Follow existing test patterns in the codebase.
 10. **Run tests** after writing them to verify they pass.
 11. **Run linting** to ensure code quality compliance.
+12. **If implementation reveals a meaningful visual or UX change not reflected in Pencil** — stop, update Pencil first, then continue coding from the updated design.
 
 ### Phase 3 — Validation
 
@@ -91,7 +95,8 @@ After implementation is complete:
 2. **Run linting/formatting** using the project's canonical validation commands documented during bootstrap.
 3. **Verify acceptance criteria** — check each criterion from Section 6 against what was implemented.
 4. **Check for compile errors** across affected projects.
-5. If any validation fails — fix the issue and re-validate.
+5. **For visually relevant UI work, verify the delivered UI against the approved Pencil design** and update the design first if they diverge.
+6. If any validation fails — fix the issue and re-validate.
 
 ### Phase 4 — Status updates
 
@@ -134,6 +139,8 @@ After successful validation:
 - **Do not modify other task scopes** — if you discover something that needs fixing outside this task's scope, note it but do not fix it. Inform the user.
 - **Naming conventions are non-negotiable** — follow the project's documented naming matrix (ADR-005).
 - **Self-sufficiency principle** — the task spec should contain everything needed. If it doesn't, that's a gap to flag, not to fill silently.
+- **Pencil is the design source of truth for visually relevant UI work** — do not resolve meaningful visual decisions only in code.
+- **If visual scope changes, Pencil changes first** — update the prototype before continuing implementation.
 - **Context7 documentation lookup**: For every library-specific implementation, use Context7 MCP to verify correctness against current documentation.
 - **Playwright validation** — when frontend or e2e behavior changes, use Playwright MCP to validate the real browser flow instead of relying only on static code inspection.
 - **GitHub and GitKraken context** — when issue, PR, review, branch, or repository-state context matters, use the GitHub or GitKraken MCP surfaces rather than guessing.

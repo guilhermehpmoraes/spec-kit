@@ -38,6 +38,7 @@ Describe the implementation approach for the approved feature with enough techni
 - **Touched areas**: [apps/<name>, services/<name>, packages/<name>, libs/<name>, src/<module>, infra/<area>]
 - **New dependencies**: [Library or N/A]
 - **Data impact**: [Schema/read-model/write-model impact or N/A]
+- **Design impact**: [No UI impact | Minor UI impact | Meaningful visual/UX impact]
 - **Constraints**: [Latency, security, compliance, rollout, etc.]
 
 ### Constraints and Assumptions
@@ -83,12 +84,23 @@ This section must be detailed enough to generate implementation-ready task specs
 - **Response contract**: [field name, type, mapping]
 - **Error contract**: [codes/messages/conditions]
 
+### Frontend Design Baseline (fill when frontend/UI impact exists)
+
+- **Design artifact location**: [`design/` path, external design doc, or N/A]
+- **Approved Pencil reference**: [file/node IDs/link/summary or N/A]
+- **Prototype approval state**: [Approved | Pending | N/A]
+- **Reusable UI implementation surface**: [package/library/module path]
+- **Theme/token source**: [CSS variables, token files, theme package, or equivalent]
+- **Responsive posture**: [mobile-first, breakpoints, key layout constraints]
+
 ### UI Contracts (fill when applicable)
 
+- **Design references**: [Pencil nodes, token docs, or N/A]
 - **Screen/Route**: [path or component context]
 - **States**: [loading, empty, error, success]
 - **Validation rules**: [field-level rules and messages]
 - **Interaction notes**: [important transitions or edge behavior]
+- **Responsive behavior**: [mobile-first behavior, breakpoints, layout changes]
 
 ## 4. Planning Gates (Step 2)
 
@@ -101,6 +113,7 @@ Must pass before the plan is approved and task breakdown (Step 3) can begin:
 - [ ] Dependencies are completed or properly sequenced.
 - [ ] Risks and edge cases are reviewed.
 - [ ] Technical design baseline is complete for all impacted layers.
+- [ ] Frontend/UI plans with meaningful visual impact include an approved Pencil reference.
 
 ### Engineering Gates
 

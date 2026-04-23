@@ -5,10 +5,8 @@
 - **Created**: [YYYY-MM-DD]
 - **Last Updated**: [YYYY-MM-DD]
 - **Owner**: [Auto-filled from `git config user.name` of the person who creates this spec]
-- **Domain / Context**: [Domain, bounded context, module, or N/A]
-- **Application / Product**: [Application, product, service, or N/A]
-- **Stack Profile**: [Selected stack for this feature, e.g. Java + Angular, NestJS + React]
-- **UI / Design Impact**: Yes | No
+- **Domain**: [Domain name — must match a spec in `docs/specs/domains/<domain>.md`]
+- **Application**: [Application name — admin, satie, etc.]
 - **Source Inputs**: [Request text, design doc, requirement links]
 - **Feature Folder**: [docs/specs/features/<feature-id>/]
 - **Feature File**: [docs/specs/features/<feature-id>/feature.spec.md]
@@ -72,7 +70,6 @@ Describe the problem in plain language and why this feature matters now.
 - **EQ-003 (Comments policy)**: Comments MUST be added only for non-obvious intent, tradeoffs, or constraints.
 - **EQ-004 (Testability)**: Boundaries and responsibilities MUST enable focused unit and integration tests.
 - **EQ-005 (Patterns baseline)**: Design choices MUST follow current ADR baseline unless explicitly justified.
-- **EQ-006 (Design fidelity)**: When the feature includes UI, implementation MUST follow the approved Pencil artifacts produced during planning unless a new planning approval supersedes them.
 
 ## 6. Dependencies and Risks
 
@@ -101,7 +98,6 @@ Also map engineering constraints to validation checks.
 - **EQ-001/EQ-005** -> [Design review against ADRs]
 - **EQ-002/EQ-003** -> [Code review checklist]
 - **EQ-004** -> [Unit/integration test coverage target]
-- **EQ-006** -> [Pencil design review for affected screens/components]
 
 ## 9. Planning Inputs for Step 2
 
@@ -129,14 +125,6 @@ Capture enough technical detail so each generated task can be implemented withou
 - **API contracts (if applicable)**: [endpoint, method, request fields/types, response fields/types, error cases]
 - **UI contracts (if applicable)**: [states, transitions, validations, empty/error states]
 - **Migration notes (if applicable)**: [forward migration, rollback strategy, backfill, compatibility]
-
-### Design and UX Inputs (Required when UI / Design Impact = Yes)
-
-- **Pencil artifact target**: [`.pen` file to create/update]
-- **Screens/routes/components to validate**: [exact scope]
-- **Shared component reuse target**: [shared library component to reuse, extend, or create]
-- **Theme/token impact**: [global CSS variables, semantic colors, spacing, typography, etc.]
-- **Mobile-first notes**: [small-screen behavior and breakpoints that matter]
 
 ### Known Dependencies
 

@@ -11,38 +11,13 @@ This project follows **Spec Driven Development (SDD)**. Every feature, module, o
 3. **Implement** — Write code that fulfills the spec. Reference the spec path in PR descriptions and commit messages when relevant.
 4. **Validate** — Tests and acceptance criteria come from the spec, not invented during implementation.
 
-## Project Init (Step 0)
-
-Before the 5-step feature delivery flow, this kit supports a one-time **project initialization** flow for new repositories.
-
-When the user asks to initialize the Spec Kit (for example: `quero iniciar o spec kit`), do this before creating any feature spec:
-
-1. Ask for the project summary, goals, and product/application context.
-2. Ask for the selected stack by layer: backend, frontend, mobile, data, testing, and CI.
-3. Ask whether the default **Nx monorepo** baseline should be kept, adapted, or replaced.
-4. Ask whether the architecture baseline in this kit should be kept, adapted, or rewritten.
-5. Ask which applications/products will exist and which shared packages or shared layers are expected.
-6. If the project has frontend scope, ask for:
-   - mobile-first expectations
-   - shared component library expectations
-   - global CSS/theme token expectations
-   - Pencil usage for component catalog and feature/page designs
-7. Use `docs/specs/templates/project-init.spec.md` as the default structure for capturing the init answers.
-8. Materialize the initialization by creating or updating:
-   - `docs/project.spec.md`
-   - `docs/architecture.md`
-   - `docs/specs/apps/<app>/architecture.md` when needed
-   - Pencil artifacts when frontend planning/design baselines are part of the project
-
-This init step makes the kit portable across stacks such as Java + Angular, NestJS + React, or other combinations while preserving the same SDD workflow.
-
 ### Mandatory 5-Step Delivery Flow
 
 Follow this sequence strictly, one step per chat:
 
 1. **Step 1 — Feature Spec Draft**: When the user provides feature input (text, notes, design doc, requirement doc), determine the next `feature-id` by checking both the existing feature folders under `docs/specs/features/` and the existing local or remote `feature/*` branches, then generate the feature spec using `docs/specs/templates/feature.spec.md` and save it as a draft file under `docs/specs/features/<feature-id>/feature.spec.md`. Set status to `Draft`. **After saving the spec, invoke the `sdd-branch` skill to create and publish `feature/<feature-id>` from the integration branch** (see ADR-009). Do not edit or create production code.
-2. **Step 2 — Feature Plan**: After feature spec approval, update feature status to `Approved` and generate the feature plan using `docs/specs/templates/plan.spec.md`. Save the plan at `docs/specs/features/<feature-id>/plan.spec.md`. The plan must be highly specific and technical: list exact files to create/modify, libraries to install, database changes, API contracts, UI contracts, and any other concrete implementation detail. **If the feature affects UI, routes, forms, layouts, or shared frontend components, create or update the Pencil design artifacts during this step and record the `.pen` file and covered screens/components in the plan.** Keep this step documentation-only plus approved design artifacts (no production code changes, no task files yet).
-3. **Step 3 — Task Breakdown**: After the feature plan is approved, update plan status to `Approved` and derive tasks from the plan using `docs/specs/templates/task.spec.md`. Save each task as its own file under `docs/specs/features/<feature-id>/tasks/`. Every generated task MUST include detailed technical implementation data (for example: database tables/fields/types/constraints/indexes/migrations when applicable, and API/UI contracts where applicable). **UI tasks must also include the exact `.pen` references that implementation must follow.** Keep this step documentation-only (no production code changes).
+2. **Step 2 — Feature Plan**: After feature spec approval, update feature status to `Approved` and generate the feature plan using `docs/specs/templates/plan.spec.md`. Save the plan at `docs/specs/features/<feature-id>/plan.spec.md`. The plan must be highly specific and technical: list exact files to create/modify, libraries to install, database changes, API contracts, UI contracts, and any other concrete implementation detail. Keep this step documentation-only (no production code changes, no task files yet).
+3. **Step 3 — Task Breakdown**: After the feature plan is approved, update plan status to `Approved` and derive tasks from the plan using `docs/specs/templates/task.spec.md`. Save each task as its own file under `docs/specs/features/<feature-id>/tasks/`. Every generated task MUST include detailed technical implementation data (for example: database tables/fields/types/constraints/indexes/migrations when applicable, and API/UI contracts where applicable). Keep this step documentation-only (no production code changes).
 4. **Step 4 — Task Implementation**: Only after the selected task spec is approved should implementation begin for that task. **Before starting, invoke the `sdd-branch` skill to create `task/<task-id>` from the feature branch.** Update task status during execution (`In Progress` -> `Done`) and keep links to the feature spec and feature plan. **After completing the task**, ask the user if they want to commit the changes. If they accept, invoke the `sdd-commit` skill to stage and commit following Conventional Commits + Gitmoji conventions, referencing the task and feature specs. **After the commit, invoke the `sdd-branch` skill to merge the task branch back into the feature branch and clean up.** **When the last task of a feature is marked `Done`, also update the plan spec status to `Completed`** — this ensures the plan is always in sync before Step 5.
 5. **Step 5 — Feature Finish**: After all tasks for the feature are `Done`, run the SDD Sharpening Loop retrospective (see section below). Ask the user targeted questions to capture outcomes: what worked well, what caused friction, any patterns worth promoting, and concrete process improvements. Update the feature spec status to `Done`. Record retrospective findings and apply approved improvements to templates, instructions, or ADRs for the next cycle. **After all retrospective changes are committed, invoke the `sdd-branch` skill to merge the feature branch into the integration branch and clean up** (see ADR-009) — this is the last action of the feature lifecycle.
 
@@ -106,13 +81,13 @@ Keep this lightweight: prefer small, evidence-based changes over large process r
 
 ## MCP Usage in SDD
 
-This workspace has five MCP surfaces that should be used deliberately during the SDD workflow: **GitKraken**, **GitHub**, **Playwright**, **Context7**, and **Pencil**.
+This workspace has four MCP surfaces that should be used deliberately during the SDD workflow: **GitKraken**, **GitHub**, **Playwright**, and **Context7**.
 
 - **Do not replace mandatory SDD skills** with MCPs when a skill is explicitly required. `sdd-branch` still governs branch lifecycle steps, and `sdd-commit` still governs commit composition and approval.
 - **Step 1 — Feature Spec Draft**: If the request references a GitHub issue, pull request, review thread, or discussion, use the GitHub or GitKraken MCP to fetch the canonical remote context before drafting or refining the spec. Use Playwright MCP when the feature request depends on understanding current browser behavior, screens, or UX regressions. Use Context7 if the feature scope depends on concrete library or framework constraints.
-- **Step 2 — Feature Plan**: Always use Context7 for library, framework, and tooling decisions. Use Pencil MCP whenever the feature changes UI, shared components, layouts, forms, or navigation so the design is produced and validated during planning. Use Playwright MCP to inspect current UI flows, routes, forms, and rendered states when planning frontend or e2e work. Use GitHub or GitKraken MCP to pull linked issue or PR discussions, acceptance notes, and repository state when those affect the plan.
-- **Step 3 — Task Breakdown**: Carry MCP-backed findings into the task specs. If a task requires browser validation, record Playwright-driven validation in the implementation steps or test scenarios. If a task depends on approved UI design, encode the exact Pencil file and screen/component references directly in the task. If a task depends on issue, PR, or review context, encode the relevant GitHub or GitKraken findings directly in the task.
-- **Step 4 — Task Implementation**: Use Context7 for library-specific implementation details, Pencil MCP as the source of truth for approved UI artifacts, Playwright MCP for browser validation and UI reproduction, GitKraken MCP for repository status, diff, branch, and PR awareness, and GitHub MCP for remote issue or pull request context when needed. Prefer MCP-backed repository and browser inspection over assumptions.
+- **Step 2 — Feature Plan**: Always use Context7 for library, framework, and tooling decisions. Use Playwright MCP to inspect current UI flows, routes, forms, and rendered states when planning frontend or e2e work. Use GitHub or GitKraken MCP to pull linked issue or PR discussions, acceptance notes, and repository state when those affect the plan.
+- **Step 3 — Task Breakdown**: Carry MCP-backed findings into the task specs. If a task requires browser validation, record Playwright-driven validation in the implementation steps or test scenarios. If a task depends on issue, PR, or review context, encode the relevant GitHub or GitKraken findings directly in the task.
+- **Step 4 — Task Implementation**: Use Context7 for library-specific implementation details, Playwright MCP for browser validation and UI reproduction, GitKraken MCP for repository status, diff, branch, and PR awareness, and GitHub MCP for remote issue or pull request context when needed. Prefer MCP-backed repository and browser inspection over assumptions.
 - **Step 5 — Feature Finish**: Use GitHub or GitKraken MCP to review PR feedback, outstanding follow-ups, merge context, and other remote delivery signals that matter to the retrospective. Use Playwright MCP if retrospective findings involve browser validation gaps or UI regressions.
 
 ### Reading specs
@@ -155,36 +130,30 @@ This ensures that architectural decisions, domain boundaries, and project-level 
 
 ## Project Context
 
-- This repository is a reusable **Spec Kit**, not a fixed product implementation.
-- The default bias is an **Nx monorepo** with apps in `apps/` and shared packages in `packages/`, but init may adapt that baseline.
-- The kit must stay usable across different stack combinations, including examples like Java + Angular and NestJS + React.
-- Each initialized project should record its own application and architecture details in `docs/project.spec.md` and `docs/specs/apps/<app>/`.
-- Domain specs live in `docs/specs/domains/` when the project uses DDD or equivalent module-level documentation.
+- This monorepo hosts multiple **applications** (platforms), each with its own backend and frontend under `apps/<application>/`.
+- Applications are not domains — they are products containing multiple DDD bounded-context domains (see ADR-004).
+- Current applications: **Admin** (internal operations tool) and **Satie** (school data platform).
+- Nx monorepo: apps in `apps/`, shared packages in `packages/`.
+- Each application has its own architecture spec at `docs/specs/apps/<app>/`.
+- Domain specs live in `docs/specs/domains/` and are linked from feature specs.
 
 ## Stack
 
-- **Default repo bias**: Nx monorepo
-- **Default package manager when using Nx/JS tooling**: pnpm
-- **Supported stack model**: choose the project stack during init instead of assuming one fixed backend/frontend combination
-- **Frontend design workflow**: Pencil for component catalog and UI planning whenever frontend scope exists
-- **Testing**: project-specific, documented during init and refined during planning
+- **Backend**: NestJS
+- **Frontend**: Vite + React + TanStack Router + TanStack Query + Tailwind CSS
+- **Database**: PostgreSQL + TypeORM (with SnakeNamingStrategy)
+- **Cache/Ephemeral**: Redis
+- **Shared DB package**: `@satie/database` (base entity, TypeORM config, naming strategy)
+- **Testing**: Jest + Supertest (backend), Vitest + React Testing Library (frontend), Playwright (e2e)
+- **Package manager**: pnpm
+- **CI**: AWS-based
 
 ## Naming Conventions
 
-- Docs, specs, prompts, and ADRs should stay in English unless the initialized project explicitly chooses otherwise.
-- Source-code naming and database naming are project-specific decisions that must be recorded during init.
-- If the project uses Nx, follow `docs/decisions/008-project-naming-conventions.md` unless init defines a different convention.
-
-## Frontend Planning Baseline
-
-If a feature includes frontend or UI work, apply these defaults unless the project baseline says otherwise:
-
-- Mobile first.
-- Shared component library for reuse across apps.
-- Reusable and configurable components preferred over many small variants.
-- Pencil component catalog maintained as a visual reference.
-- Design changes happen in Step 2 planning so Step 4 implementation follows approved `.pen` artifacts.
-- Global CSS/theme tokens define the visual system.
+- **Database** (tables, columns, indexes, constraints): Portuguese
+- **TypeORM entity classes and properties**: Portuguese (consistent with DB schema, see ADR-005)
+- **Source code** (all other layers — services, controllers, DTOs, modules, guards, variables): English
+- **Docs, specs, ADRs**: English
 
 ## Commit Conventions
 

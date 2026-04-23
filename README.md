@@ -1,99 +1,164 @@
-# Spec Kit
+# Satie
 
-Reusable personal **Spec Driven Development** kit for bootstrapping new projects and running a consistent delivery flow across different stacks. The default bias is **Nx monorepo**, but the kit is intentionally portable enough to support combinations such as **Java + Angular**, **NestJS + React**, or other backend/frontend pairings.
+Monorepo for the **Admin** and **Satie** platforms. Built with Nx, NestJS, React, PostgreSQL, and Redis.
 
-## What This Kit Standardizes
+## Prerequisites
 
-- A project initialization flow that captures stack, architecture direction, and repo conventions before feature work starts.
-- A 5-step SDD delivery flow for features: spec, plan, tasks, implementation, retrospective.
-- Frontend planning with **Pencil** so UI decisions are validated during planning instead of being corrected repeatedly during implementation.
-- Shared documentation structure under `docs/` and reusable spec templates under `docs/specs/templates/`.
+- **Node.js** (see `.nvmrc` or `package.json` for version)
+- **pnpm** 10.x+
+- **Docker** and **Docker Compose** (V2)
 
-## Default Baseline
+## Getting Started
 
-These are defaults, not hard constraints:
+### 1. Install dependencies
 
-- **Repository shape**: Nx monorepo with `apps/` and `packages/`
-- **Architecture mode**: keep, adapt, or replace the baseline during project init
-- **Frontend process**: mobile-first, shared component library, global theme tokens, and Pencil-driven planning
-- **Delivery model**: SDD with branch lifecycle managed by the `sdd-branch` skill
+```bash
+pnpm install
+```
 
-## Project Init
+### 2. Set up environment variables
 
-When you copy this kit into another repository, start with `/init` or a prompt such as `quero iniciar o spec kit`.
+```bash
+cp .env.example .env
+```
 
-That init flow should collect at least:
+Edit `.env` as needed. The defaults work for local development with Docker Compose.
 
-- Project summary, goals, and product context
-- Selected stack by layer: backend, frontend, mobile, database, testing, CI
-- Whether the repo will keep the default **Nx monorepo** baseline or adapt it
-- Whether the existing architecture should be kept, adapted, or rewritten
-- Applications/products that will exist in the repo
-- Shared package strategy and naming conventions
-- Frontend expectations, if any:
-  - mobile-first behavior
-  - shared UI/component library in `packages/` or equivalent shared layer
-  - reusable and configurable components instead of many near-duplicate variants
-  - global CSS/theme tokens for primary, secondary, tertiary colors and related design rules
-  - Pencil component catalog and feature/page designs in `.pen` files
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_HOST` | `localhost` | PostgreSQL host |
+| `DATABASE_PORT` | `5432` | PostgreSQL port |
+| `DATABASE_USER` | `satie` | PostgreSQL user |
+| `DATABASE_PASSWORD` | `satie` | PostgreSQL password |
+| `DATABASE_NAME` | `satie_dev` | PostgreSQL database |
+| `REDIS_HOST` | `localhost` | Redis host |
+| `REDIS_PORT` | `6379` | Redis port |
+| `JWT_SECRET` | — | Secret key for JWT signing (required) |
+| `JWT_ACCESS_EXPIRY` | `15m` | Access token lifetime |
+| `JWT_REFRESH_EXPIRY` | `7d` | Refresh token lifetime |
+| `ADMIN_SEED_EMAIL` | `admin@satie.local` | Super-admin seed email |
+| `ADMIN_SEED_PASSWORD` | — | Super-admin seed password (required for seed migration) |
+| `APP_ENVIRONMENT` | `dev` | Environment label used to derive master username and database name prefixes for educational groups (`dev` or `prod`) |
 
-The expected output of init is to create or update the project baseline docs:
+### 3. Start infrastructure (PostgreSQL + Redis)
 
-- `docs/project.spec.md`
-- `docs/architecture.md`
-- `docs/specs/templates/project-init.spec.md` as the reusable init questionnaire/template
-- `docs/specs/apps/<app>/architecture.md` when app-level architecture is needed
-- Pencil files and component catalogs when the project has frontend/UI scope
+```bash
+docker compose up -d
+```
+
+Services:
+
+| Service | Image | Port |
+|---------|-------|------|
+| PostgreSQL | `postgres:17.4` | `5432` |
+| Redis | `redis:latest` | `6379` |
+
+Data persists via named volumes (`satie_pgdata`, `satie_redisdata`). To reset:
+
+```bash
+docker compose down -v
+```
+
+### 4. Run database migrations
+
+```bash
+pnpm exec typeorm migration:run -d apps/admin/backend/src/config/typeorm.config.ts
+```
+
+This creates all domain tables:
+- **Identity**: `usuario_admin` (+ super-admin seed)
+- **Subscription**: `produto`, `permissao`, `plano`, `plano_permissao`
+- **Educational Group**: `grupo_educacional`, `usuario_mestre`, `parametros_grupo_educacional`, `usuario_comum`, `assinatura`
+
+### 5. Start the Admin backend
+
+```bash
+pnpm nx serve backend
+```
+
+The API runs at `http://localhost:3000/api`. API docs (Scalar) at `http://localhost:3000/api/docs`.
+
+## Running Tests
+
+```bash
+# Backend unit tests
+pnpm nx run backend-tests:test
+
+# Backend integration/e2e tests (requires Docker services running)
+pnpm nx run backend-tests:e2e
+
+# All checks (Biome lint + format)
+pnpm nx run-many -t check
+```
+
+## Project Structure
+
+```
+apps/
+  admin/
+    backend/           NestJS API (Identity, Subscription, and Educational Group domains)
+    backend-tests/     Jest + Supertest tests
+    frontend/          Vite + React UI
+    frontend-tests/    Playwright tests
+packages/
+  database/            @satie/database — shared base entity, TypeORM config, Redis module
+  database-tests/      Unit tests for @satie/database
+  utils/               @satie/utils — slug generation, random password, environment naming helpers
+  utils-tests/         Unit tests for @satie/utils
+docs/
+  architecture.md      Repo-wide architecture
+  project.spec.md      High-level project spec
+  specs/               Feature, plan, task, domain, and app specs
+  decisions/           ADRs (architectural decision records)
+```
 
 ## Workflow (SDD)
 
-The feature delivery flow starts after project init and is defined in `.github/copilot-instructions.md`.
+This project follows **Spec Driven Development**. Every feature starts from a spec before code is written. The full workflow rules live in `.github/copilot-instructions.md`, and templates in `docs/specs/templates/`.
 
-| Step | Goal | Main Output |
-| ---- | ---- | ----------- |
-| Init | Establish project baseline and stack profile | `docs/project.spec.md`, `docs/architecture.md`, optional app architecture docs |
-| 1 — Feature Spec | Define feature scope and acceptance | `feature.spec.md` |
-| 2 — Feature Plan | Produce technical plan and validate design | `plan.spec.md`, approved Pencil artifacts when UI exists |
-| 3 — Task Breakdown | Derive implementation-ready task files | `TXXX-*.task.spec.md` files |
-| 4 — Implementation | Deliver code against an approved task | code, tests, updated task status |
-| 5 — Retrospective | Capture learnings and refine the kit | updated specs/templates/instructions/ADRs |
+### Delivery Flow
 
-### Planning Rule for Frontend Features
+The SDD flow has 5 steps, each driven by a Copilot prompt:
 
-If a feature affects UI, routing, forms, layout, or shared components:
+| Step | Prompt | Input | Output |
+|------|--------|-------|--------|
+| 1 — Feature Spec | `/feature` | Feature description (text) or existing `feature-id` to refine | `feature.spec.md` in `Draft` |
+| 2 — Feature Plan | `/plan <feature-id>` | Approved feature spec | `plan.spec.md` with technical details, DB schemas, API contracts |
+| 3 — Task Breakdown | `/tasks <feature-id>` | Approved plan | One `T<NNN>-*.task.spec.md` per task, each with full implementation detail |
+| 4 — Implementation | `/implement <feature-id> <task-id>` | Ready task spec | Production code, tests, task status → `Done` |
+| 5 — Retrospective | `/finish <feature-id>` | All tasks `Done` | Retrospective findings, process improvements applied |
 
-- the design must be created or updated in **Pencil during Step 2**
-- the plan must reference the `.pen` file and the relevant screens/components
-- the implementation task must use the approved `.pen` artifact as the source of truth
-- design changes should happen in planning first, not ad hoc during implementation
+### How to Use
 
-## Frontend Baseline
+1. **Start a feature**: run `/feature` with a description of the problem/requirement. Review and approve the generated spec.
+2. **Plan**: run `/plan <feature-id>`. Answer technical questions. Review and approve the plan.
+3. **Break into tasks**: run `/tasks <feature-id>`. Confirm the proposed task list. Review generated task files.
+4. **Implement**: run `/implement <feature-id> <task-id>` for each task (in dependency order). Each task produces code + tests and offers to commit.
+5. **Close the feature**: run `/finish <feature-id>` after all tasks are done. Answer retrospective questions and approve process improvements.
 
-The default frontend baseline for projects using this kit is:
+### Artifact Structure
 
-- **Mobile first** layout and interaction design
-- **Own component library** maintained as a shared package for reuse across apps
-- **Reusable and dynamic components** with configurable behavior instead of many small variants
-- **Pencil component catalog** so shared components can be reviewed visually in one place
-- **Global CSS/theme layer** defining tokens such as primary, secondary, tertiary colors and shared visual rules
-
-## Artifact Structure
-
-```text
-docs/
-  architecture.md
-  project.spec.md
-  decisions/
-  specs/
-    apps/
-    domains/
-    features/
-    templates/
+```
+docs/specs/features/<feature-id>/
+  feature.spec.md
+  plan.spec.md
+  tasks/
+    T001-<short-title>.task.spec.md
+    T002-<short-title>.task.spec.md
+    ...
 ```
 
-## Rules
+### Rules
 
-- No production code in Steps 1-3.
-- Plans and tasks must contain enough technical detail to implement without hidden discovery.
-- If UI is involved, Pencil validation happens in Step 2 and implementation follows the approved `.pen` artifact.
-- Foundational docs should be updated when the stack or architecture baseline changes.
+- **No production code** in Steps 1–3 (spec/plan/tasks only).
+- Tasks must have enough technical detail for any dev to implement without extra context.
+- A task cannot be marked `Done` unless all tests pass and Biome reports zero issues.
+- When Steps 1–2 run in plan mode, materialize approved artifacts in a separate write-enabled chat before implementing.
+
+## Conventions
+
+- **Database** (tables, columns, constraints, indexes): Portuguese
+- **TypeORM entity classes and properties**: Portuguese (ADR-005)
+- **Source code** (services, controllers, DTOs, modules, guards): English
+- **Docs, specs, ADRs**: English
+- **Commits**: Conventional Commits + Gitmoji

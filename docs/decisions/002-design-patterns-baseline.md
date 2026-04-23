@@ -6,40 +6,27 @@ Accepted
 
 ## Context
 
-The team needs practical guidance for design patterns that fit the current stack and experience level. The goal is to use a small set of patterns consistently, avoiding over-engineering while keeping code extensible.
+Projects need guidance on pattern selection, but the kit must avoid prescribing framework-specific architectures that only fit one stack.
 
 ## Decision
 
-We adopt a small baseline of patterns and delay advanced patterns until real need appears.
+The baseline is to prefer a **small, pragmatic set of patterns** that match the project's actual architecture and delivery needs.
 
-### Backend (NestJS)
+### Default Guidance
 
-- **Module pattern** as primary boundary by domain.
-- **Controller-Service-Repository** for request handling, business orchestration, and persistence separation.
-- **DTO + validation** for explicit API contracts.
-- **Adapter pattern** for external providers/integrations.
+- Use clear module, package, or service boundaries.
+- Separate orchestration from core business rules when the codebase benefits from that split.
+- Use adapters for external systems or unstable integration points.
+- Prefer composition and small reusable units over inheritance-heavy hierarchies.
+- Introduce advanced patterns only when complexity justifies them.
 
-### Frontend (React)
+### Explicit Non-Goals
 
-- **Container/Presentational split (lightweight)**:
-    - container components handle data orchestration,
-    - presentational components focus on rendering and interaction.
-- **Custom hooks** for reusable state and side-effect logic.
-- **Composition over inheritance** for UI reuse.
-
-### Shared Packages
-
-- **Utility modules** for pure reusable logic.
-- **Contract modules** for shared types/schemas used by multiple apps.
-
-### Explicit Non-Goals (for now)
-
-- No mandatory use of complex patterns (Factory hierarchies, CQRS/Event Sourcing, Mediator pipelines) unless required by measurable complexity.
-- No pattern adoption only for theoretical purity.
+- No required framework pattern such as controller-service-repository, CQRS, or hook-based state management unless the project chooses it.
+- No pattern adoption purely for theoretical purity.
 
 ## Consequences
 
-- Faster onboarding and more consistent code organization.
-- Lower risk of accidental architecture complexity.
-- Some future features may require introducing additional patterns via new ADRs.
-- Pattern choices remain aligned with KISS-first development.
+- The kit stays useful across multiple stacks.
+- Projects can document stack-specific patterns later through additional ADRs.
+- Reviewers can challenge unnecessary complexity without blocking pragmatic architecture choices.

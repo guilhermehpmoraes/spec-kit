@@ -1,14 +1,15 @@
-# Domain specs
+# Domain Specs
 
-This directory contains domain specs following DDD bounded context principles.
+This directory is optional. Use it when the project benefits from explicit domain, bounded-context, capability-area, or module-level documentation.
 
-Each domain spec is a Markdown file named `<domain-name>.md` that documents:
+Each spec is a Markdown file named `<domain-or-area>.md` and may document:
 
-- The bounded context and its responsibilities
-- Core entities, value objects, and aggregates
-- Domain rules and invariants
-- Which application the domain belongs to
+- responsibilities and boundaries
+- core entities, aggregates, or business concepts
+- invariants and rules
+- owning product, surface, or application
+- upstream and downstream integrations
 
-Domain specs are referenced from feature specs via the `Domain` field.
+Feature specs can reference these documents through the `Domain/Area` field.
 
-See [ADR-004](../../decisions/004-domain-driven-design-baseline.md) for the domain organization decision.
+If the project does not use domain-oriented documentation, this directory may stay empty.

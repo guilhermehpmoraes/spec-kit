@@ -26,7 +26,7 @@ Refs: <feature-spec-path> | <task-spec-path>
 
 1. **Gitmoji** — Use the emoji (not the code) that best matches the change type.
 2. **Type** — Standard Conventional Commits type: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `ci`, `build`, `perf`, `style`.
-3. **Scope** — Derived from the affected app, package, or domain (e.g., `admin-backend`, `database`, `identity`). Use the most specific scope possible.
+3. **Scope** — Derived from the affected app, service, package, module, or domain. Use the most specific scope possible.
 4. **Short description** — Imperative mood, lowercase, no period, max 72 chars.
 5. **Body** (optional) — Brief explanation of *what* and *why*, not *how*. Use when the subject line alone is insufficient.
 6. **Refs footer** — Include the relative path to the task spec and/or feature spec being implemented.
@@ -134,18 +134,18 @@ Report the result of all commits to the user. Summarize what was committed and h
 - **Never auto-commit without user approval** — Always show the message (or commit plan) first.
 - **Keep commits atomic** — One logical change per commit. If the diff contains unrelated changes, suggest splitting.
 - **Don't over-split** — 1 commit is the default. Only split when there's genuine benefit to the git history. Avoid commit spam.
-- **Portuguese naming in entities is expected** — Don't flag TypeORM entity names in Portuguese as issues; that's by design (ADR-005).
+- **Naming conventions come from the project** — Respect the repository's documented naming matrix and do not impose sample kit conventions.
 - **Spec references matter** — Always include the `Refs:` footer linking to the task/feature spec in every commit.
 - **Multi-line commit messages** — When passing the commit message to `mcp_gitkraken_git_add_or_commit`, use actual line breaks (newlines) in the message string, **never** use literal `\n` escape sequences. The message parameter must contain real newline characters so git receives a properly formatted multi-line message. Only break lines between logical paragraphs (subject, body, footer) — do **not** wrap or split sentences mid-phrase just to shorten lines.
 - **Commit body style** — Always include a body with bullet points (`-`) listing each logical change made in the commit. Each bullet should be a concise but descriptive sentence. Keep a blank line between subject, body, and `Refs:` footer. Example:
 
   ```
-  📝 docs(identity): add identity domain spec and update admin architecture
+  📝 docs(identity): add identity domain spec and update service architecture
 
-  - Create docs/specs/domains/identity.md with domain responsibilities, entities, modules, API surface, and related ADRs
-  - Update admin architecture doc with module hierarchy, infrastructure dependencies, and shared package details
-  - Link domain spec from feature spec Domain field
+  - Create docs/specs/domains/identity.md with responsibilities, entities, interfaces, and related ADRs
+  - Update the relevant architecture doc with module hierarchy, infrastructure dependencies, and shared package details
+  - Link domain spec from the feature spec Domain/Area field
   - Mark T007 as Done
 
-  Refs: docs/specs/features/001-admin-identity-domain/tasks/T007-identity-domain-docs.task.spec.md
+  Refs: docs/specs/features/001-feature-name/tasks/T007-identity-domain-docs.task.spec.md
   ```

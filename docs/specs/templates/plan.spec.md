@@ -24,17 +24,18 @@ Describe the implementation approach for the approved feature with enough techni
 
 ## 3. Technical Context
 
-### Stack Baseline (Satie)
+### Project Baseline (from bootstrap)
 
-- **Monorepo**: Nx + pnpm
-- **Backend**: NestJS
-- **Frontend**: Vite + React + TanStack Router + TanStack Query + Tailwind CSS
-- **Database**: PostgreSQL
-- **Tests**: Jest + Supertest, Vitest + React Testing Library, Playwright
+- **Repository topology**: [Monorepo | Single repo | Multi-service repo]
+- **Primary stack(s)**: [Languages, frameworks, runtimes]
+- **Build/task runner**: [Nx, Turborepo, Maven, Gradle, npm scripts, Make, etc.]
+- **Dependency management**: [pnpm, npm, yarn, Maven, Gradle, etc.]
+- **Data stores**: [PostgreSQL, MySQL, MongoDB, Redis, Kafka, S3, N/A, etc.]
+- **Tests**: [Unit, integration, e2e tooling actually used by the project]
 
 ### Feature-Specific Context
 
-- **Touched apps/packages**: [apps/<domain>/backend, apps/<domain>/frontend, packages/<name>]
+- **Touched areas**: [apps/<name>, services/<name>, packages/<name>, libs/<name>, src/<module>, infra/<area>]
 - **New dependencies**: [Library or N/A]
 - **Data impact**: [Schema/read-model/write-model impact or N/A]
 - **Constraints**: [Latency, security, compliance, rollout, etc.]
@@ -49,24 +50,24 @@ Describe the implementation approach for the approved feature with enough techni
 
 This section must be detailed enough to generate implementation-ready task specs.
 
-### Database Design (fill when data impact exists)
+### Data Design (fill when data impact exists)
 
-#### Tables and Actions
+#### Storage Objects and Actions
 
-| Schema | Table | Action (Create/Alter/Drop) | Purpose |
-| ------ | ----- | -------------------------- | ------- |
-| [public] | [nome_tabela] | [Create] | [Why this table changes] |
+| Store/Schema | Object | Action (Create/Alter/Drop) | Purpose |
+| ------------ | ------ | -------------------------- | ------- |
+| [public] | [orders] | [Create] | [Why this object changes] |
 
-#### Columns Specification
+#### Fields Specification
 
-| Tabela | Campo | Tipo SQL | Nullable | Default | PK | FK Ref | Unique | Index | Notes |
-| ------ | ----- | -------- | -------- | ------- | -- | ------ | ------ | ----- | ----- |
-| [usuarios] | [id] | [uuid] | [No] | [gen_random_uuid()] | [Yes] | [N/A] | [Yes] | [PK] | [Primary key] |
+| Object | Field | Type | Nullable | Default | PK | FK/Ref | Unique | Index | Notes |
+| ------ | ----- | ---- | -------- | ------- | -- | ------ | ------ | ----- | ----- |
+| [orders] | [id] | [uuid] | [No] | [generated] | [Yes] | [N/A] | [Yes] | [PK] | [Primary key] |
 
 #### Constraints and Indexes
 
-- [Constraint name, type, target columns, behavior]
-- [Index name, target columns, index type, reason]
+- [Constraint name, type, target fields, behavior]
+- [Index name, target fields, index type, reason]
 
 #### Migration Strategy
 
@@ -154,12 +155,8 @@ Use this matrix to derive one task file per row.
 List concrete paths expected to change.
 
 ```text
-apps/
-  <domain>/
-    backend/
-    frontend/
-packages/
-  <shared-lib>/
+apps/ | services/ | packages/ | libs/ | src/
+  <affected-area>/
 docs/
   specs/
   decisions/ (if needed)
@@ -169,8 +166,8 @@ docs/
 
 - **Backend**: [Modules, handlers, services, repositories, tests]
 - **Frontend**: [Routes, pages, components, queries, tests]
-- **Shared packages**: [Types, utilities, UI components]
-- **Database**: [Migrations, seeds, constraints]
+- **Shared packages/modules**: [Types, utilities, SDKs, UI components]
+- **Data layer**: [Migrations, seeds, contracts, constraints]
 - **QA**: [Unit tests, integration tests, E2E tests, manual checks]
 
 ## 9. Validation Strategy

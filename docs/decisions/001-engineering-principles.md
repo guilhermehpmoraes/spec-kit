@@ -6,39 +6,27 @@ Accepted
 
 ## Context
 
-The project needs a simple and explicit engineering baseline that is easy to apply from day one. The team wants to avoid accidental complexity, keep code easy to read, and standardize quality expectations while the platform is still being shaped.
+The kit needs a small set of engineering principles that remain useful across different languages, frameworks, and repository shapes.
 
 ## Decision
 
-We adopt the following baseline engineering principles for all code in Satie.
+Every project adopting this kit starts with the following baseline principles unless a later ADR overrides them:
 
-1. KISS first.
-2. Self-descriptive code over comments.
-3. Comments only when intent is not obvious from code.
-4. Evolve design incrementally, avoid premature abstraction.
-5. Keep units cohesive and boundaries explicit for testability.
+1. Prefer the simplest solution that fully meets the requirement.
+2. Favor self-descriptive code and documentation over explanatory noise.
+3. Keep boundaries explicit so behavior can be tested and changed safely.
+4. Evolve architecture by evidence, not speculation.
+5. Make validation part of delivery, not a final afterthought.
 
 ### Practical Rules
 
-- Prefer straightforward control flow and data structures before introducing abstractions.
-- Choose clear names for modules, functions, variables, and tests.
-- Keep functions and classes focused on one responsibility.
-- Introduce comments only for:
-    - domain/business intent that is not obvious,
-    - non-trivial tradeoffs,
-    - temporary constraints or workarounds.
-- Avoid comments that only restate the code.
-
-### Review Checklist
-
-- Is this the simplest implementation that satisfies the requirement?
-- Is the code understandable without additional comments?
-- Are responsibilities split clearly and testable in isolation?
-- Is new abstraction justified by current requirements?
+- Prefer straightforward control flow and naming before abstraction.
+- Introduce indirection only when it solves a present problem.
+- Keep specs, plans, tasks, and code aligned.
+- Add comments only for non-obvious intent, tradeoffs, or constraints.
 
 ## Consequences
 
-- Code review becomes more consistent and objective.
-- New contributors can follow a clear quality baseline.
-- Some refactoring may be required when older code violates the baseline.
-- Architecture will evolve by evidence, not by upfront complexity.
+- Reviews have a stable quality baseline.
+- The same core expectations apply across stacks.
+- Some inherited project habits may need to be changed during bootstrap or later delivery.

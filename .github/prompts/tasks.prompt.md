@@ -1,7 +1,7 @@
 ---
 description: "Break down an approved feature plan into task spec files (Step 3) following the project's SDD workflow"
 name: "tasks"
-argument-hint: "Feature ID (e.g. 001-admin-identity-domain)"
+argument-hint: "Feature ID (e.g. 001-feature-name)"
 agent: "agent"
 ---
 You are responsible for executing **only Step 3 — Task Breakdown** of this repository's SDD workflow.
@@ -31,9 +31,9 @@ Before starting task breakdown, read and internalize:
 4. The feature spec at `docs/specs/features/<feature-id>/feature.spec.md`
 5. The feature plan at `docs/specs/features/<feature-id>/plan.spec.md`
 6. All ADRs referenced by the feature spec and plan in `docs/decisions/`
-7. The feature's parent domain spec if it exists (check `docs/specs/domains/`)
-8. The application architecture spec at `docs/specs/apps/<app>/architecture.md`
-9. Existing codebase structure relevant to the feature (explore `apps/`, `packages/` as needed to understand current state)
+7. The feature's parent domain/area spec if it exists (check `docs/specs/domains/`)
+8. The surface-specific architecture spec at `docs/specs/apps/<surface>/architecture.md` when it exists
+9. Existing codebase structure relevant to the feature (explore the actual repository layout as needed to understand current state)
 
 ## Task breakdown process
 
@@ -135,7 +135,7 @@ If the user confirms tasks are ready:
 - **Do NOT summarize or shorten technical details** from the plan — copy contracts, schemas, and specifications in full into each task that needs them. Tasks must be self-sufficient.
 - **Every task must pass Definition of Ready** — review Section 8 of the task template before saving each file.
 - **Self-sufficiency is non-negotiable** — a developer must be able to implement a task using only that task file, the feature spec, and the plan. No hidden context.
-- **Naming conventions**: Follow project conventions — Portuguese for database/entity names, English for all other code and documentation (ADR-005).
+- **Naming conventions**: Follow the project's documented naming and language conventions (ADR-005).
 - **Context7 documentation lookup**: When generating implementation steps (Section 5) that reference specific library APIs, decorators, configuration, or CLI commands, use the Context7 MCP (`mcp_context7_resolve-library-id` → `mcp_context7_get-library-docs`) to verify correctness against current documentation. Do not rely on training data alone for library-specific details.
 - **Playwright browser validation**: When a task changes browser-visible behavior, routes, forms, rendered states, or e2e flows, include Playwright MCP-driven validation in Section 5 or Section 7.
 - **GitHub and GitKraken context**: When a task depends on issue, PR, review, branch, or repository-state context, encode the relevant GitHub or GitKraken MCP checks directly in the task instead of assuming that context will be remembered later.

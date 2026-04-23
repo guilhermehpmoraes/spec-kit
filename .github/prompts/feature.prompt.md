@@ -14,7 +14,7 @@ Use the input provided below by the user as the primary input.
 
 ## Mode detection
 
-1. Check if the user input references an existing `feature-id` (e.g. `001-admin-identity-domain`) or an existing feature spec path.
+1. Check if the user input references an existing `feature-id` (e.g. `001-feature-name`) or an existing feature spec path.
 2. If it does, locate the file at `docs/specs/features/<feature-id>/feature.spec.md` and read it.
    - If the spec **Status is `Draft`** → enter **Refine mode**.
    - If the spec **Status is NOT `Draft`** (e.g. `Approved`, `In Planning`, etc.) → **stop** and inform the user that this prompt only works for features in `Draft` status. Suggest using the appropriate SDD step for the current status.
@@ -32,12 +32,12 @@ Create a complete feature spec draft with status `Draft`, following the project'
    - `docs/project.spec.md`
    - `.github/copilot-instructions.md`
    - `docs/specs/templates/feature.spec.md`
-   - Relevant ADRs in `docs/decisions/` (including ADR-004 for domain/application context)
+   - Relevant ADRs in `docs/decisions/` (including ADR-004 for domain/area context)
    - If the feature request references a GitHub issue, PR, or review discussion, fetch that remote context with the GitHub or GitKraken MCP before drafting the spec.
 
 2. Ask pertinent refinement questions **before finalizing the spec** to reduce ambiguity. Prioritize questions about:
    - Problem and business value
-   - Target application (admin, satie, etc.) and domain (DDD bounded context)
+   - Target product/surface (application, service, package, library, etc.) and domain/area (if applicable)
    - Scope and out of scope
    - User scenarios and priority (P1/P2/P3)
    - Functional requirements
@@ -51,7 +51,7 @@ Create a complete feature spec draft with status `Draft`, following the project'
 4. Generate a `feature-id` in the format `###-feature-name` (kebab-case), create the feature folder, and save the file at:
    - `docs/specs/features/<feature-id>/feature.spec.md`
 
-5. Set status to `Draft` and fill in all applicable sections of the feature spec template — including the `Domain` and `Application` fields.
+5. Set status to `Draft` and fill in all applicable sections of the feature spec template — including the `Domain/Area` and `Product/Surface` fields.
 
 6. Do not write production code in this step.
 

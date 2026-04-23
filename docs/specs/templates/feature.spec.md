@@ -5,8 +5,8 @@
 - **Created**: [YYYY-MM-DD]
 - **Last Updated**: [YYYY-MM-DD]
 - **Owner**: [Auto-filled from `git config user.name` of the person who creates this spec]
-- **Domain**: [Domain name — must match a spec in `docs/specs/domains/<domain>.md`]
-- **Application**: [Application name — admin, satie, etc.]
+- **Domain/Area**: [Optional bounded context, module, capability area, or N/A]
+- **Product/Surface**: [Application, service, package, library, platform, or N/A]
 - **Source Inputs**: [Request text, design doc, requirement links]
 - **Feature Folder**: [docs/specs/features/<feature-id>/]
 - **Feature File**: [docs/specs/features/<feature-id>/feature.spec.md]
@@ -105,7 +105,7 @@ Use this section to make Step 2 deterministic.
 
 ### Affected Areas
 
-- [Backend modules, frontend routes, shared packages, database tables, infra, QA]
+- [Apps, services, packages, modules, routes, schemas, infra, QA, docs]
 
 ### Proposed Implementation Slices
 
@@ -121,10 +121,10 @@ Use this section to make Step 2 deterministic.
 
 Capture enough technical detail so each generated task can be implemented without hidden context.
 
-- **Database changes (if applicable)**: [tables, columns, SQL types, nullability, defaults, PK/FK, indexes, constraints]
-- **API contracts (if applicable)**: [endpoint, method, request fields/types, response fields/types, error cases]
-- **UI contracts (if applicable)**: [states, transitions, validations, empty/error states]
-- **Migration notes (if applicable)**: [forward migration, rollback strategy, backfill, compatibility]
+- **Data changes (if applicable)**: [tables/collections/topics/files, fields, types, nullability, defaults, constraints, indexes]
+- **API or interface contracts (if applicable)**: [endpoint/event/command, request fields/types, response fields/types, error cases]
+- **UI or interaction contracts (if applicable)**: [states, transitions, validations, empty/error states]
+- **Migration or rollout notes (if applicable)**: [forward migration, rollback strategy, backfill, compatibility]
 
 ### Known Dependencies
 

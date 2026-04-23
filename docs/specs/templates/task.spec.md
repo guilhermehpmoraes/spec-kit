@@ -70,19 +70,19 @@ If a subsection does not apply, explicitly write `N/A` and explain why.
 
 ### 4.2 Database Specification (mandatory when data impact exists)
 
-Database object names must follow project convention in Portuguese.
+Data object names must follow the consuming project's naming convention.
 
-#### Tables and Actions
+#### Storage Objects and Actions
 
-| Schema | Tabela | Acao (Create/Alter/Drop) | Motivo |
-| ------ | ------ | ------------------------ | ------ |
-| [public] | [alunos] | [Create] | [new enrollment flow] |
+| Store/Schema | Object | Action (Create/Alter/Drop) | Purpose |
+| ------------ | ------ | -------------------------- | ------- |
+| [public] | [orders] | [Create] | [new checkout flow] |
 
 #### Fields Specification
 
-| Tabela | Campo | Tipo SQL | Nullable | Default | PK | FK (ref) | Unique | Index | Notes |
-| ------ | ----- | -------- | -------- | ------- | -- | -------- | ------ | ----- | ----- |
-| [alunos] | [id] | [uuid] | [No] | [gen_random_uuid()] | [Yes] | [N/A] | [Yes] | [PK] | [primary key] |
+| Object | Field | Type | Nullable | Default | PK | FK/Ref | Unique | Index | Notes |
+| ------ | ----- | ---- | -------- | ------- | -- | ------ | ------ | ----- | ----- |
+| [orders] | [id] | [uuid] | [No] | [generated] | [Yes] | [N/A] | [Yes] | [PK] | [primary key] |
 
 #### Constraints and Indexes
 
@@ -167,7 +167,7 @@ This section is **mandatory** before marking the task as `Done`. Paste the exact
 - [ ] Links to changed files/PR/tests are registered.
 - [ ] Feature spec and plan traceability remains intact.
 
-## 10. Jira Mapping (Optional)
+## 11. Jira Mapping (Optional)
 
 - **Issue Type**: Task or Bug
 - **Summary**: [Short Jira title]
@@ -177,7 +177,7 @@ This section is **mandatory** before marking the task as `Done`. Paste the exact
 - **Custom field (Tipo)**: Feature | Improvement | Technical Debt | Bugfix
 - **Custom field (Tamanho)**: [ex: 1 Dia, 2 Dias, 4 Dias]
 
-## 11. Status Log
+## 12. Status Log
 
 Record status transitions to keep execution history visible.
 
@@ -189,7 +189,7 @@ Record status transitions to keep execution history visible.
 | YYYY-MM-DD | In Progress | Implementation started |
 | YYYY-MM-DD | Done        | Implementation and validation completed |
 
-## 12. Observations
+## 13. Observations
 
 Capture runtime observations during implementation — environment issues, library surprises, deviations from plan, workarounds applied, or any other notes that don't fit in other sections. This section feeds into the feature retrospective (Step 5).
 

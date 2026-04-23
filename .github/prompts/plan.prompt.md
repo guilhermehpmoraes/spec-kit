@@ -1,7 +1,7 @@
 ---
 description: "Create a feature plan (Step 2) for an approved feature spec, resolving all technical questions to enable self-sufficient task generation"
 name: "plan"
-argument-hint: "Feature ID (e.g. 001-admin-identity-domain)"
+argument-hint: "Feature ID (e.g. 001-feature-name)"
 agent: "agent"
 ---
 You are responsible for executing **only Step 2 — Feature Plan** of this repository's SDD workflow.
@@ -30,9 +30,9 @@ Before starting any planning work, read and internalize:
 3. `docs/specs/templates/plan.spec.md` — the plan template to fill
 4. `docs/specs/templates/task.spec.md` — understand what the plan must feed into (tasks must be self-sufficient)
 5. All ADRs referenced by the feature spec in `docs/decisions/`
-6. The feature's parent domain spec if it exists (check `docs/specs/domains/`)
-7. The application architecture spec at `docs/specs/apps/<app>/architecture.md`
-8. Existing codebase structure relevant to the feature (explore `apps/`, `packages/` as needed)
+6. The feature's parent domain/area spec if it exists (check `docs/specs/domains/`)
+7. The surface-specific architecture spec at `docs/specs/apps/<surface>/architecture.md` when it exists
+8. Existing codebase structure relevant to the feature (explore the actual repository layout as needed)
 
 ## Planning process
 
@@ -40,7 +40,7 @@ Before starting any planning work, read and internalize:
 
 Before writing the plan, you MUST perform technical verification.
 
-**Context7 documentation lookup**: For every library, framework, or tool referenced in the feature spec or relevant to the plan (NestJS, TypeORM, TanStack Router, TanStack Query, Vite, Tailwind, Playwright, Jest, etc.), use the Context7 MCP (`mcp_context7_resolve-library-id` → `mcp_context7_get-library-docs`) to fetch current documentation. Verify API signatures, decorator usage, configuration options, and migration patterns against the latest docs — do not rely on training data alone.
+**Context7 documentation lookup**: For every library, framework, or tool referenced in the feature spec or relevant to the plan, use the Context7 MCP (`mcp_context7_resolve-library-id` → `mcp_context7_get-library-docs`) to fetch current documentation. Verify API signatures, configuration options, integration patterns, and migration guidance against the latest docs — do not rely on training data alone.
 
 **GitHub and GitKraken remote context lookup**: If the feature, plan input, or existing docs reference GitHub issues, pull requests, comments, or review decisions, use the GitHub or GitKraken MCP to fetch the canonical remote context before locking the plan.
 
@@ -82,7 +82,7 @@ After all questions are resolved:
 
 #### Mandatory detail levels
 
-- **Database design**: Exact table names (Portuguese), column names, SQL types, nullability, defaults, PK/FK, constraints, indexes, migration strategy. Use the project's naming conventions (ADR-005).
+- **Data design**: Exact storage object names, field names, types, nullability, defaults, PK/FK or references, constraints, indexes, and migration strategy. Use the project's naming conventions (ADR-005).
 - **API contracts**: Exact endpoints, HTTP methods, request/response shapes with field names and types, validation rules, error codes and messages.
 - **UI contracts** (if applicable): Routes, component hierarchy, states (loading/empty/error/success), field validations, interaction behavior.
 - **File paths**: Exact files to create or modify — no vague references like "backend module". List actual paths.
@@ -94,7 +94,7 @@ The plan MUST include an explicit mapping of documentation changes or additions 
 
 - **New or updated ADRs** (`docs/decisions/`): If the plan introduces a new pattern, library, or architectural decision not covered by existing ADRs.
 - **Domain specs** (`docs/specs/domains/`): If a new domain is being created or an existing domain spec needs updates.
-- **Application architecture** (`docs/specs/apps/<app>/architecture.md`): If the feature changes the application's architecture or adds new modules.
+- **Surface architecture** (`docs/specs/apps/<surface>/architecture.md`): If the feature changes a documented application, service, package, or deployable surface architecture.
 - **Other docs**: README updates, new guides, configuration docs, etc.
 
 Include these documentation tasks in the scope-to-execution mapping and task generation matrix.

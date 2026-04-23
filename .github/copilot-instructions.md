@@ -2,164 +2,179 @@
 
 ## Spec Driven Development
 
-This project follows **Spec Driven Development (SDD)**. Every feature, module, or architectural change starts from a spec before any code is written.
+This repository follows **Spec Driven Development (SDD)**. Significant product, architectural, or workflow changes should start from specs and documented decisions before implementation.
 
 ### Workflow
 
-1. **Spec first** — Before writing code, check `docs/specs/` for the relevant spec. If none exists, create or update one.
-2. **Decide** — Architectural decisions are recorded as ADRs in `docs/decisions/`. Reference the relevant ADR number in specs and code when applicable.
-3. **Implement** — Write code that fulfills the spec. Reference the spec path in PR descriptions and commit messages when relevant.
-4. **Validate** — Tests and acceptance criteria come from the spec, not invented during implementation.
+1. **Bootstrap first** — When the repository is newly adopting this kit or still contains sample placeholders, run the bootstrap/init flow before normal feature work.
+2. **Spec first** — Before writing code, check `docs/specs/` for the relevant spec. If none exists, create or update one.
+3. **Decide** — Architectural and workflow decisions are recorded as ADRs in `docs/decisions/`.
+4. **Implement** — Write code that fulfills approved specs and plans.
+5. **Validate** — Tests and acceptance criteria come from the specs, not from improvisation during implementation.
 
-### Mandatory 5-Step Delivery Flow
+## Bootstrap Step
 
-Follow this sequence strictly, one step per chat:
+### Step 0 — Project Bootstrap / Init
 
-1. **Step 1 — Feature Spec Draft**: When the user provides feature input (text, notes, design doc, requirement doc), determine the next `feature-id` by checking both the existing feature folders under `docs/specs/features/` and the existing local or remote `feature/*` branches, then generate the feature spec using `docs/specs/templates/feature.spec.md` and save it as a draft file under `docs/specs/features/<feature-id>/feature.spec.md`. Set status to `Draft`. **After saving the spec, invoke the `sdd-branch` skill to create and publish `feature/<feature-id>` from the integration branch** (see ADR-009). Do not edit or create production code.
-2. **Step 2 — Feature Plan**: After feature spec approval, update feature status to `Approved` and generate the feature plan using `docs/specs/templates/plan.spec.md`. Save the plan at `docs/specs/features/<feature-id>/plan.spec.md`. The plan must be highly specific and technical: list exact files to create/modify, libraries to install, database changes, API contracts, UI contracts, and any other concrete implementation detail. Keep this step documentation-only (no production code changes, no task files yet).
-3. **Step 3 — Task Breakdown**: After the feature plan is approved, update plan status to `Approved` and derive tasks from the plan using `docs/specs/templates/task.spec.md`. Save each task as its own file under `docs/specs/features/<feature-id>/tasks/`. Every generated task MUST include detailed technical implementation data (for example: database tables/fields/types/constraints/indexes/migrations when applicable, and API/UI contracts where applicable). Keep this step documentation-only (no production code changes).
-4. **Step 4 — Task Implementation**: Only after the selected task spec is approved should implementation begin for that task. **Before starting, invoke the `sdd-branch` skill to create `task/<task-id>` from the feature branch.** Update task status during execution (`In Progress` -> `Done`) and keep links to the feature spec and feature plan. **After completing the task**, ask the user if they want to commit the changes. If they accept, invoke the `sdd-commit` skill to stage and commit following Conventional Commits + Gitmoji conventions, referencing the task and feature specs. **After the commit, invoke the `sdd-branch` skill to merge the task branch back into the feature branch and clean up.** **When the last task of a feature is marked `Done`, also update the plan spec status to `Completed`** — this ensures the plan is always in sync before Step 5.
-5. **Step 5 — Feature Finish**: After all tasks for the feature are `Done`, run the SDD Sharpening Loop retrospective (see section below). Ask the user targeted questions to capture outcomes: what worked well, what caused friction, any patterns worth promoting, and concrete process improvements. Update the feature spec status to `Done`. Record retrospective findings and apply approved improvements to templates, instructions, or ADRs for the next cycle. **After all retrospective changes are committed, invoke the `sdd-branch` skill to merge the feature branch into the integration branch and clean up** (see ADR-009) — this is the last action of the feature lifecycle.
+When this kit is copied into a new or existing repository, the first operation should be `/init`.
 
-### Checklist-Gated Status Transitions
+The bootstrap flow must:
 
-A spec's **status MUST NOT change** unless every checkbox in its corresponding checklist is checked. This applies to:
+1. Ask the user for the real project context:
+   - product or platform name
+   - repository topology (monorepo, single repo, multi-service, etc.)
+   - stacks, frameworks, runtimes, and major libraries
+   - package manager or build tool
+   - testing and quality tools
+   - naming and language conventions
+   - branch and release conventions
+   - optional domain/application documentation structure
+2. Inspect the repository to confirm what already exists.
+3. Materialize the answers into at least:
+   - `README.md`
+   - `docs/project.spec.md`
+   - `docs/architecture.md`
+   - `docs/decisions/`
+   - `.github/copilot-instructions.md`
+4. Remove or retire any bootstrap-only instruction file created solely for the setup flow.
 
-- **Feature spec**: Gate checklists in section "Workflow and Status Gates" must be fully checked before moving to the next step.
-- **Plan spec**: "Planning Gates" (section 4) must be fully checked before approval. "Step 2 Completion Checklist" (section 11) must be fully checked before handing off to Step 3.
-- **Task spec**: "Definition of Ready" must be fully checked before setting status to `Ready`. "Definition of Done" must be fully checked before setting status to `Done`.
+Until bootstrap is complete, avoid treating any sample stack, app name, or branch name in the kit as authoritative project truth.
 
-If any checkbox cannot be checked, the status transition is blocked. Resolve the gap first, then transition.
+## Mandatory 5-Step Delivery Flow
 
-### Dependency-Aware Task Status Rule
+After bootstrap, follow this sequence strictly, one step per chat:
+
+1. **Step 1 — Feature Spec Draft**: Determine the next `feature-id` by checking both existing feature folders under `docs/specs/features/` and local/remote `feature/*` branches. Generate the feature spec with `docs/specs/templates/feature.spec.md`, save it under `docs/specs/features/<feature-id>/feature.spec.md`, and set status to `Draft`. After saving the spec, invoke the `sdd-branch` skill to create and publish `feature/<feature-id>` from the configured integration branch.
+2. **Step 2 — Feature Plan**: After feature spec approval, update feature status to `Approved` and generate the feature plan using `docs/specs/templates/plan.spec.md`. Save the plan at `docs/specs/features/<feature-id>/plan.spec.md`. The plan must be concrete enough to generate self-sufficient tasks. Keep this step documentation-only.
+3. **Step 3 — Task Breakdown**: After the feature plan is approved, update the plan status to `Approved` and derive tasks using `docs/specs/templates/task.spec.md`. Save each task under `docs/specs/features/<feature-id>/tasks/`. Keep this step documentation-only.
+4. **Step 4 — Task Implementation**: Only after the selected task spec is approved and `Ready` should implementation begin. Before starting, invoke the `sdd-branch` skill to create `task/<task-id>` from the feature branch. Update task status during execution and, after completion, offer a commit via `sdd-commit`. After the commit, invoke `sdd-branch` to merge the task branch back into the feature branch and clean up.
+5. **Step 5 — Feature Finish**: After all tasks for the feature are `Done`, run the retrospective, capture learnings, update templates/instructions/ADRs when approved, and invoke `sdd-branch` to merge the feature branch back into the configured integration branch.
+
+## Checklist-Gated Status Transitions
+
+A spec's status MUST NOT change unless every checkbox in its corresponding checklist is checked.
+
+- **Feature spec**: Gate checklists in section `Workflow and Status Gates` must be complete.
+- **Plan spec**: `Planning Gates` and `Step 2 Completion Checklist` must be complete.
+- **Task spec**: `Definition of Ready` and `Definition of Done` must be complete before the corresponding status change.
+
+If any checkbox cannot be checked, the status transition is blocked.
+
+## Dependency-Aware Task Status Rule
 
 A task's status MUST reflect its dependency state:
 
-- **`Awaiting Dependency`**: The task spec is approved and complete, but one or more dependency tasks are NOT yet `Done`. The task cannot be picked up for implementation.
-- **`Ready`**: The task spec is approved AND all dependency tasks are `Done` (or the task has no dependencies). Only then can it be picked up for Step 4.
+- **`Awaiting Dependency`**: The task is approved but one or more dependencies are not `Done`.
+- **`Ready`**: The task is approved and all dependencies are `Done`, or it has no dependencies.
 
-During **Step 3 (Task Breakdown)**:
-- Tasks with **no dependencies** start as `Ready` (if approved).
-- Tasks **with unfinished dependencies** start as `Awaiting Dependency`.
+When a task is marked `Done`, re-check dependent tasks and move them from `Awaiting Dependency` to `Ready` when all dependencies are satisfied.
 
-During **Step 4 (Task Implementation)**:
-- When a task is marked `Done`, check all tasks that depend on it. If a dependent task's **all** dependencies are now `Done`, automatically transition it from `Awaiting Dependency` to `Ready`.
+## Owner Auto-Population
 
-### Owner Auto-Population
+The **Owner** field in every spec is auto-filled from `git config user.name`.
 
-The **Owner** field in every spec is auto-filled using `git config user.name` — never leave it as `TBD` or a placeholder.
+- **Feature spec**: owner is the person creating the feature spec.
+- **Plan spec**: owner is the person creating the plan.
+- **Task spec**: owner is the person who starts implementation. During task breakdown, owner may stay `TBD` until implementation begins.
 
-- **Feature spec (Step 1)**: Set Owner to the `git config user.name` of the person creating the feature spec.
-- **Plan spec (Step 2)**: Set Owner to the `git config user.name` of the person creating the plan spec.
-- **Task spec (Step 4)**: Set Owner to the `git config user.name` of the person who starts implementation (i.e., when they pick up the task). During task breakdown (Step 3), leave Owner as `TBD` since the implementer is not yet known.
+## Plan Mode Operational Rule
 
-### Plan Mode Operational Rule
-
-When working in **plan mode** through Step 3, use this execution pattern:
+When working in plan mode through Step 3:
 
 1. Run Steps 1, 2, and 3 in plan mode for drafting and approvals.
-2. Before Step 4, run a **Materialization chat** in normal (write-enabled) mode to persist approved artifacts exactly as approved, without changing scope/content.
-3. In Materialization chat, only write/update spec files and statuses under `docs/specs/features/<feature-id>/`.
+2. Before Step 4, run a materialization chat in write-enabled mode to persist approved artifacts exactly as approved.
+3. In that chat, only write or update spec files and statuses under `docs/specs/features/<feature-id>/`.
 4. Start implementation only after materialization is complete and at least one task is `Ready`.
 
-### Continuous SDD Sharpening Loop
+## Continuous SDD Sharpening Loop
 
-Triggered by **Step 5 — Feature Finish**. Run a short retrospective and evolve the process:
+Triggered by **Step 5 — Feature Finish**.
 
-1. **Ask questions** — Prompt the user with targeted questions:
-   - What went smoothly during this feature?
-   - Where did friction or rework happen?
-   - Were any specs unclear or incomplete?
-   - Did any implementation deviate from the plan? Why?
-   - Are there patterns worth standardizing?
-2. **Review outcomes** — Capture what worked well and what caused friction based on user answers.
-3. **Promote patterns** — Convert proven practices into stable rules/templates.
-4. **Fix weak spots** — Add one or two concrete process improvements for the next cycle.
-5. **Apply changes** — Update templates, copilot instructions, or propose ADRs as needed. Use the updated rules in the following feature.
+1. Ask what worked well.
+2. Ask where friction or rework happened.
+3. Ask whether any specs, plans, or tasks were unclear.
+4. Ask whether implementation deviated from the plan and why.
+5. Promote proven patterns into templates, instructions, or ADRs.
 
-Keep this lightweight: prefer small, evidence-based changes over large process rewrites.
+Keep this lightweight. Prefer small, evidence-based improvements.
 
 ## MCP Usage in SDD
 
-This workspace has four MCP surfaces that should be used deliberately during the SDD workflow: **GitKraken**, **GitHub**, **Playwright**, and **Context7**.
+This kit expects deliberate use of MCP surfaces when they reduce ambiguity.
 
-- **Do not replace mandatory SDD skills** with MCPs when a skill is explicitly required. `sdd-branch` still governs branch lifecycle steps, and `sdd-commit` still governs commit composition and approval.
-- **Step 1 — Feature Spec Draft**: If the request references a GitHub issue, pull request, review thread, or discussion, use the GitHub or GitKraken MCP to fetch the canonical remote context before drafting or refining the spec. Use Playwright MCP when the feature request depends on understanding current browser behavior, screens, or UX regressions. Use Context7 if the feature scope depends on concrete library or framework constraints.
-- **Step 2 — Feature Plan**: Always use Context7 for library, framework, and tooling decisions. Use Playwright MCP to inspect current UI flows, routes, forms, and rendered states when planning frontend or e2e work. Use GitHub or GitKraken MCP to pull linked issue or PR discussions, acceptance notes, and repository state when those affect the plan.
-- **Step 3 — Task Breakdown**: Carry MCP-backed findings into the task specs. If a task requires browser validation, record Playwright-driven validation in the implementation steps or test scenarios. If a task depends on issue, PR, or review context, encode the relevant GitHub or GitKraken findings directly in the task.
-- **Step 4 — Task Implementation**: Use Context7 for library-specific implementation details, Playwright MCP for browser validation and UI reproduction, GitKraken MCP for repository status, diff, branch, and PR awareness, and GitHub MCP for remote issue or pull request context when needed. Prefer MCP-backed repository and browser inspection over assumptions.
-- **Step 5 — Feature Finish**: Use GitHub or GitKraken MCP to review PR feedback, outstanding follow-ups, merge context, and other remote delivery signals that matter to the retrospective. Use Playwright MCP if retrospective findings involve browser validation gaps or UI regressions.
+- **Do not replace mandatory SDD skills** when a skill is explicitly required.
+- **Use Context7** for stack-specific APIs, framework configuration, or library behavior relevant to the actual project.
+- **Use Playwright** when the work depends on real browser-visible behavior.
+- **Use GitHub or GitKraken** when issues, PRs, reviews, releases, or repository state materially affect the work.
 
-### Reading specs
+## Reading Order
 
-- Start with `docs/project.spec.md` for high-level project understanding.
-- Templates live in `docs/specs/templates/`.
-- Use `docs/specs/templates/feature.spec.md` as the default starting point for new feature specs.
-- Use `docs/specs/templates/plan.spec.md` to plan the approved feature before implementation.
-- Use `docs/specs/templates/task.spec.md` to create one task file per task derived from the approved feature plan.
-- Store each feature package in `docs/specs/features/<feature-id>/` with `feature.spec.md`, `plan.spec.md`, and `tasks/`.
-- Domain specs live in `docs/specs/domains/`. Feature specs reference their parent domain.
-- Application-specific architecture specs live in `docs/specs/apps/<app>/`.
+Start from:
 
-### Reading decisions
+1. `docs/project.spec.md`
+2. `docs/architecture.md`
+3. `docs/specs/templates/`
+4. relevant feature, plan, or task artifacts
+5. relevant ADRs in `docs/decisions/`
+6. optional `docs/specs/domains/` and `docs/specs/apps/` docs when they exist
 
-- ADRs are numbered sequentially: `docs/decisions/NNN-title.md`.
-- Always check existing ADRs before proposing conflicting approaches.
+## Impact Review on Foundational Changes
 
-### Impact Review on Foundational Changes
+Whenever a foundational document is added, removed, or materially changed, review all open specs for alignment before changing them.
 
-Whenever a **foundational document** is created or modified, automatically review all **open** specs (features, plans, and tasks not yet `Done`) for alignment. Foundational documents include:
+Foundational documents include:
 
 - `docs/project.spec.md`
 - `docs/architecture.md`
 - `docs/specs/apps/<app>/architecture.md`
 - `docs/specs/domains/*.md`
-- `docs/decisions/*.md` (ADRs)
+- `docs/decisions/*.md`
 
-**Trigger**: Any commit or edit that adds, updates, or removes content in the files above.
+Review process:
 
-**Review process**:
-
-1. Scan `docs/specs/features/` for features with status other than `Done`.
-2. For each open feature, check its `feature.spec.md`, `plan.spec.md`, and `tasks/*.task.spec.md`.
-3. Flag any spec that **conflicts with**, **is outdated by**, or **should reference** the changed foundational document.
-4. Present a summary to the user listing affected specs and what needs updating.
-5. Only apply changes to specs after user approval.
-
-This ensures that architectural decisions, domain boundaries, and project-level changes propagate consistently to in-flight work.
+1. Scan `docs/specs/features/` for features whose status is not `Done`.
+2. Check each open feature's spec, plan, and task files.
+3. Flag any artifact that conflicts with or should reference the changed foundational document.
+4. Present the impact summary to the user.
+5. Only apply updates after user approval.
 
 ## Project Context
 
-- This monorepo hosts multiple **applications** (platforms), each with its own backend and frontend under `apps/<application>/`.
-- Applications are not domains — they are products containing multiple DDD bounded-context domains (see ADR-004).
-- Current applications: **Admin** (internal operations tool) and **Satie** (school data platform).
-- Nx monorepo: apps in `apps/`, shared packages in `packages/`.
-- Each application has its own architecture spec at `docs/specs/apps/<app>/`.
-- Domain specs live in `docs/specs/domains/` and are linked from feature specs.
+This file is part of a reusable kit. The consuming repository must replace the sample context during `/init`.
 
-## Stack
+Document here after bootstrap:
 
-- **Backend**: NestJS
-- **Frontend**: Vite + React + TanStack Router + TanStack Query + Tailwind CSS
-- **Database**: PostgreSQL + TypeORM (with SnakeNamingStrategy)
-- **Cache/Ephemeral**: Redis
-- **Shared DB package**: `@satie/database` (base entity, TypeORM config, naming strategy)
-- **Testing**: Jest + Supertest (backend), Vitest + React Testing Library (frontend), Playwright (e2e)
-- **Package manager**: pnpm
-- **CI**: AWS-based
+- repository topology
+- main deployable surfaces (apps, services, packages, libraries, etc.)
+- optional domain or module documentation structure
+- key stack/tooling choices
+
+## Stack and Tooling
+
+Do not assume a fixed stack.
+
+After bootstrap, this section should record the actual project choices for:
+
+- languages and runtimes
+- frameworks and libraries
+- package manager or build tool
+- test tooling
+- linting/formatting/static analysis tooling
+- CI and release surfaces
 
 ## Naming Conventions
 
-- **Database** (tables, columns, indexes, constraints): Portuguese
-- **TypeORM entity classes and properties**: Portuguese (consistent with DB schema, see ADR-005)
-- **Source code** (all other layers — services, controllers, DTOs, modules, guards, variables): English
-- **Docs, specs, ADRs**: English
+Do not assume Portuguese database names, English-only code, or any other hardcoded convention.
+
+After bootstrap, this section should document the project's naming matrix in line with ADR-005.
 
 ## Commit Conventions
 
-All commits follow **Conventional Commits** with **Gitmoji** prefixes. Format:
+Commits follow **Conventional Commits** with **Gitmoji** prefixes.
 
-```
+Format:
+
+```text
 <gitmoji> <type>(<scope>): <short description>
 
 <optional body>
@@ -167,67 +182,54 @@ All commits follow **Conventional Commits** with **Gitmoji** prefixes. Format:
 Refs: <task-spec-path>
 ```
 
-- Use the `sdd-commit` skill for composing and executing commits.
-- Always include a `Refs:` footer linking to the relevant task/feature spec.
-- Keep commits atomic — one logical change per commit.
+- Use the `sdd-commit` skill.
+- Always include a `Refs:` footer linking to the relevant task or feature spec.
+- Keep commits atomic.
 - Never auto-commit without user approval.
 
 ## Branching Strategy
 
-This project uses an **SDD-aligned branching strategy** (ADR-009) managed by the `sdd-branch` skill. Git Flow CLI is **not** used.
+This project uses an **SDD-aligned branching strategy** (ADR-009) managed by the `sdd-branch` skill.
 
-- **Integration branch**: `sandbox` (will become `develop` after bootstrap phase)
-- **Feature branches**: `feature/<feature-id>` — created from the integration branch at Step 1
-- **Task branches**: `task/<task-id>` — created from the feature branch at Step 4
-- **Feature numbering**: choose the next `feature-id` by inspecting both `docs/specs/features/` and existing local/remote `feature/*` branches; use the next unused numeric prefix so folders and branches stay aligned.
-- Merges use `--no-ff` to preserve history boundaries
-- No rebasing — merges only for clear audit trail
-- See the `sdd-branch` skill for detailed operations and the ADR for rationale
+After bootstrap, this section should state:
+
+- the integration branch name
+- the release branch or trunk
+- any project-specific merge or publication rules
+
+Do not hardcode `sandbox`, `develop`, or similar names unless the project has explicitly chosen them.
 
 ## Code Guidelines
 
-- Follow existing patterns in the codebase before introducing new ones.
-- Check `docs/decisions/` for rationale behind current patterns.
-- When proposing a new library or pattern, suggest creating an ADR first.
+- Follow existing repository patterns before introducing new ones.
+- Check `docs/decisions/` for relevant rationale.
+- If a new long-lived library, pattern, or workflow rule is introduced, consider creating or updating an ADR.
 
-### Biome Compliance (Mandatory)
+## Quality and Validation Gates
 
-After writing or modifying any source code, run Biome and resolve **all** warnings and errors before considering the change complete:
+### Quality Tooling Gate
 
-```bash
-pnpm nx run-many -t check
-```
+After writing or modifying source code, run the project's canonical validation commands as documented during bootstrap. Do not assume `pnpm nx run-many -t check` or any other specific command unless the repository has declared it as canonical.
 
-- Never leave code in a non-compliant state — warnings are not acceptable.
-- If Biome reports issues, fix them immediately as part of the current task.
-- Do not mark a task as `Done` with outstanding Biome warnings or errors.
+### Test Pass Gate
 
-### Test Pass Gate (Mandatory)
+A task MUST NOT be marked `Done` unless all related tests pass.
 
-A task MUST NOT be marked `Done` unless **all** related tests pass — both unit and integration:
+- Tests must be actually executed.
+- If tests fail, the task stays `In Progress`.
+- If required environment dependencies are unavailable, stop and alert the user rather than silently skipping.
 
-- **Tests MUST be actually executed** — never assume tests pass without running them. Observing the test command output is mandatory.
-- Run the relevant test suite before transitioning a task to `Done`.
-- If any test fails, the task stays `In Progress` until all failures are resolved.
-- Never mark a Definition of Done checkbox as complete if the corresponding tests have not been executed and verified as passing.
-- When a task includes test scenarios in its spec, every listed scenario must have a passing test.
-- **Environment failures are NOT a reason to skip tests.** If the development environment (Docker services, database, Redis, etc.) is not running or misconfigured and tests cannot execute, **stop immediately** and alert the user to fix the environment. Do not proceed with marking the task as Done.
-- Never silently skip, ignore, or assume test results — every test run must produce visible, verified output.
+### Test Evidence Gate
 
-### Test Evidence Gate (Mandatory)
+Every task spec contains a **Test Evidence** table.
 
-Every task spec contains a **Section 10 — Test Evidence** table. This section serves as auditable proof that tests were executed and passed.
-
-- **Before marking a task as `Done`**, populate the Test Evidence table with the exact command(s) run and their pass/fail/skip output summary.
-- The Definition of Done checkbox for Test Evidence is **blocking** — if the section is empty or shows failures, the task cannot transition to `Done`.
-- Never pre-fill this section during planning (Steps 1–3). It is populated only during Step 4.
-- This is non-negotiable: build and lint passing alone do NOT satisfy the test gate.
+- Before marking a task `Done`, populate that table with the exact command(s) run and the observed result summary.
+- If the section is empty or contains failures, the task cannot transition to `Done`.
 
 ## Documentation Lookup (Context7)
 
-This workspace has the **Context7 MCP** available (`mcp_context7_resolve-library-id`, `mcp_context7_get-library-docs`).
+Use Context7 whenever the current task depends on library, framework, tool, or platform behavior that may vary by version or stack.
 
-- **Always use Context7** to fetch up-to-date documentation before writing or planning code that depends on any library, framework, or tool in the stack (NestJS, TypeORM, TanStack Router, TanStack Query, Vite, Tailwind CSS, Playwright, Jest, Vitest, React Testing Library, Biome, etc.).
-- Do NOT rely solely on training data for API signatures, configuration options, decorator usage, or migration guides — verify against current docs via Context7.
-- During **planning** (Step 2) and **task implementation** (Step 4), consult Context7 for every library-specific decision: correct decorator syntax, module configuration, query/mutation patterns, test utilities, CLI flags, etc.
-- When a library version is ambiguous or a breaking change is suspected, resolve it through Context7 before proceeding.
+- Do not rely solely on training data for stack-specific APIs.
+- During planning and implementation, verify library-specific details against current documentation.
+- Resolve ambiguity before proceeding when a version or API change matters.

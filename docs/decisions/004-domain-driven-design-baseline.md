@@ -1,4 +1,4 @@
-# ADR-004: Domain-Driven Design Baseline and Multi-Platform Organization
+# ADR-004: Solution Boundary Documentation Baseline
 
 ## Status
 
@@ -6,42 +6,30 @@ Accepted
 
 ## Context
 
-The repository hosts multiple platforms (applications), starting with Admin and Satie. The initial documentation and architecture framed everything around Satie as the primary product. As the project grows, we need:
-
-1. A repo-wide architecture that is platform-agnostic — not centered on a single product.
-2. A clear distinction between **applications** (platforms) and **domains** (DDD bounded contexts).
-3. A consistent way to document, spec, and implement domain-scoped work across the codebase.
+Some projects using this kit will organize work around DDD bounded contexts. Others will use modules, capabilities, services, or product areas. The kit needs a way to document solution boundaries without forcing one architecture style.
 
 ## Decision
 
-### Applications vs. Domains
+The kit supports **boundary-oriented documentation** with optional domain specs.
 
-- **Applications** are the deployable platforms: `apps/admin/`, `apps/satie/`, etc. Each has its own `backend/` and `frontend/`.
-- **Domains** follow Domain-Driven Design principles. Each domain is a bounded context that encapsulates a coherent problem area within an application.
-- Domains are **scoped to a single application**. A domain does not span multiple apps. If two apps share concepts, they do so through shared contracts in `packages/`, not by sharing a domain.
+### Baseline Rules
 
-### Code Organization
+- A project may document boundaries as domains, modules, capability areas, services, or another clear unit.
+- `docs/specs/domains/` is available for this purpose but is optional.
+- Feature specs may reference a `Domain/Area` when that adds clarity.
+- Per-app or per-surface architecture specs are optional and should be added only when repo-wide docs are not enough.
 
-- Each application decides its own internal code organization for domains. There is no enforced folder convention across apps.
-- Shared abstractions live in `packages/` only when they are truly cross-application.
+### If the project uses DDD
 
-### Documentation Organization
+- Domain specs represent bounded contexts.
+- Feature specs should reference the relevant domain.
 
-- **Repo-wide architecture**: `docs/architecture.md` — covers the entire monorepo, layers, and cross-cutting concerns.
-- **Per-app architecture**: `docs/specs/apps/<app>/architecture.md` — detailed architecture for each application.
-- **Domain specs**: `docs/specs/domains/<domain-name>.md` — one spec per domain, describing its bounded context, responsibilities, entities, and rules.
-- **Feature specs**: reference their parent domain via the `Domain` field in the feature spec header.
+### If the project does not use DDD
 
-### Domain Spec Lifecycle
-
-- Domains are documented in `docs/specs/domains/` before or alongside the first feature that touches them.
-- Feature specs declare which domain they belong to (`Feature -> Domain` linking).
-- Domain specs are living documents that evolve as features are delivered.
+- The same directory can document modules, services, or capability areas instead.
 
 ## Consequences
 
-- Architecture documentation becomes platform-agnostic and scales to N applications.
-- Each team or application can organize domain code internally without a repo-wide convention.
-- Domain boundaries are explicit and traceable from specs to code.
-- Feature specs gain clearer context by linking to their parent domain.
-- Per-app architecture specs allow depth without cluttering the repo-wide overview.
+- The kit remains compatible with DDD-oriented and non-DDD repositories.
+- Teams still have a consistent place to document boundary ownership.
+- Projects must be explicit during bootstrap about which boundary model they actually use.

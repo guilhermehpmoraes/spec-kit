@@ -1,3 +1,8 @@
+This file is part of a reusable kit.
+
+If the consuming repository uses Nx, follow the Nx-specific guidance below.
+If the repository does not use Nx, treat the Nx section as optional and rely on the project's actual build, task, and workspace tooling documented during bootstrap.
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 

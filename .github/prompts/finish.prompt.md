@@ -1,7 +1,7 @@
 ---
 description: "Run the SDD Feature Finish retrospective (Step 5) — validate all specs are Done, ask targeted questions, and evolve the SDD process"
 name: "finish"
-argument-hint: "Feature ID (e.g. 001-admin-identity-domain)"
+argument-hint: "Feature ID (e.g. 001-feature-name)"
 agent: "agent"
 ---
 You are responsible for executing **Step 5 — Feature Finish** of this repository's SDD workflow.
@@ -34,8 +34,8 @@ Before starting the retrospective, read and internalize:
 5. `docs/project.spec.md` — project context
 6. All ADRs referenced by the feature in `docs/decisions/`
 7. Existing spec templates in `docs/specs/templates/` (feature, plan, task)
-8. The application architecture spec at `docs/specs/apps/<app>/architecture.md`
-9. The domain spec if referenced (check `docs/specs/domains/`)
+8. The surface-specific architecture spec at `docs/specs/apps/<surface>/architecture.md` when it exists
+9. The domain/area spec if referenced (check `docs/specs/domains/`)
 10. The project `README.md` at the repository root — developer-facing guide for setup, init, and operation
 11. If retrospective findings depend on remote review, issue, or PR context, fetch that evidence with the GitHub or GitKraken MCP before proposing process changes
 
@@ -115,12 +115,12 @@ After user approval:
    - Update prompt files in `.github/prompts/` if prompt workflow changes were approved
    - Create new ADR files in `docs/decisions/` if new architectural decisions were approved
    - Update domain specs in `docs/specs/domains/` if domain documentation changes were approved
-   - Update architecture specs in `docs/specs/apps/<app>/` if architecture documentation changes were approved
+   - Update architecture specs in `docs/specs/apps/<surface>/` if surface-specific architecture documentation changes were approved
 
 2. **Update the project `README.md`** — Review the root `README.md` and update it to reflect any changes introduced by this feature that affect how developers set up, initialize, run, or operate the project. This includes but is not limited to:
    - New environment variables or configuration requirements
    - New services added to `docker-compose.yml`
-   - New CLI commands, scripts, or Nx targets
+   - New CLI commands, scripts, or project task targets
    - Changed prerequisites or dependencies
    - Updated setup/init steps
    - New applications, packages, or domain modules added to the workspace

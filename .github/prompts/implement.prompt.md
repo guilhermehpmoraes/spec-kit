@@ -41,8 +41,8 @@ Before writing any code, read and internalize:
 4. `.github/copilot-instructions.md` — naming conventions, stack, SDD rules
 5. `docs/project.spec.md` — project context
 6. All ADRs referenced by the task spec in `docs/decisions/`
-7. The application architecture spec at `docs/specs/apps/<app>/architecture.md` (derive `<app>` from the feature spec's Application field)
-8. The domain spec if referenced (check `docs/specs/domains/`)
+7. The surface-specific architecture spec at `docs/specs/apps/<surface>/architecture.md` when the feature references one
+8. The domain/area spec if referenced (check `docs/specs/domains/`)
 9. Existing codebase files that will be modified (read them before editing)
 
 ## Dependency check
@@ -73,8 +73,8 @@ Execute the implementation steps from the task spec (Section 5) in order. For ea
 
 1. **Follow the task spec precisely** — implement exactly what is specified. Do not add features, refactor unrelated code, or make "improvements" beyond the task scope.
 2. **Follow existing codebase patterns** — match the style, structure, and conventions already in use.
-3. **Follow naming conventions** — Portuguese for database/entity names, English for all other code (ADR-005).
-4. **Use Context7 documentation lookup** when implementing library-specific code (NestJS decorators, TypeORM entities, TanStack patterns, etc.) — verify API signatures and configuration against current docs.
+3. **Follow naming conventions** — use the project's documented naming and language rules (ADR-005).
+4. **Use Context7 documentation lookup** when implementing library-specific code — verify API signatures and configuration against current docs.
 5. **Use Playwright MCP** when implementing or validating browser-visible behavior, route transitions, forms, or e2e flows.
 6. **Use GitKraken MCP** when you need repository status, diff, branch, worktree, or PR awareness during implementation.
 7. **Use GitHub MCP** when implementation depends on remote issue, pull request, review, or release context.
@@ -88,7 +88,7 @@ Execute the implementation steps from the task spec (Section 5) in order. For ea
 After implementation is complete:
 
 1. **Run all tests** related to the changes (unit, integration, e2e as applicable).
-2. **Run linting/formatting** (`pnpm nx lint <project>`, `pnpm nx format:check` or equivalent).
+2. **Run linting/formatting** using the project's canonical validation commands documented during bootstrap.
 3. **Verify acceptance criteria** — check each criterion from Section 6 against what was implemented.
 4. **Check for compile errors** across affected projects.
 5. If any validation fails — fix the issue and re-validate.
@@ -100,7 +100,7 @@ After successful validation:
 1. **Update the task spec**:
    - Change `Status` from `Ready` to `In Progress`, then to `Done`.
    - Update `Last Updated` date.
-   - Add entries to **Section 11 — Status Log** for both transitions.
+   - Add entries to **Section 12 — Status Log** for both transitions.
    - Fill in **Section 9 — Definition of Done** checkboxes.
 
 2. **Update the feature spec** (if applicable):
@@ -132,9 +132,9 @@ After successful validation:
 - **Follow the task spec as the blueprint** — do not invent scope, skip steps, or add unspecified features.
 - **Ask when in doubt** — if the task spec is ambiguous or conflicts with the codebase, ask the user rather than guessing.
 - **Do not modify other task scopes** — if you discover something that needs fixing outside this task's scope, note it but do not fix it. Inform the user.
-- **Naming conventions are non-negotiable** — Portuguese for DB/entities, English for everything else (ADR-005).
+- **Naming conventions are non-negotiable** — follow the project's documented naming matrix (ADR-005).
 - **Self-sufficiency principle** — the task spec should contain everything needed. If it doesn't, that's a gap to flag, not to fill silently.
-- **Context7 documentation lookup**: For every library-specific implementation (NestJS modules, TypeORM entities, guards, interceptors, TanStack queries, Tailwind config, etc.), use Context7 MCP to verify correctness against current documentation.
+- **Context7 documentation lookup**: For every library-specific implementation, use Context7 MCP to verify correctness against current documentation.
 - **Playwright validation** — when frontend or e2e behavior changes, use Playwright MCP to validate the real browser flow instead of relying only on static code inspection.
 - **GitHub and GitKraken context** — when issue, PR, review, branch, or repository-state context matters, use the GitHub or GitKraken MCP surfaces rather than guessing.
 - **SDD skills remain mandatory** — `sdd-branch` still governs branch lifecycle steps and `sdd-commit` still governs commit composition and approval.

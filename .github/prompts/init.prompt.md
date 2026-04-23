@@ -53,6 +53,8 @@ Ask the user for the real project context in one grouped batch. Cover at least:
 	- how global theme values are defined
 	- whether mobile-first is the default responsive baseline
 	- whether Pencil is required for visually relevant UI changes
+- if the project uses Nx, whether applications are grouped as `apps/<app>/backend` and `apps/<app>/frontend`
+- if the project uses Nx, where unit, integration, and e2e tests live for backend and frontend stacks
 - naming and language conventions
 - branching and release conventions
 - whether the project uses domains, modules, bounded contexts, or another boundary model

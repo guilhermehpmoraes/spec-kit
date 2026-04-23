@@ -151,6 +151,13 @@ Document here after bootstrap:
 - optional domain or module documentation structure
 - key stack/tooling choices
 
+If the project uses Nx with app-oriented full-stack grouping, document whether it follows:
+
+- `apps/<app>/backend`
+- `apps/<app>/frontend`
+- colocated unit/integration tests inside each stack
+- stack-root end-to-end test folders such as `backend/test/e2e` and `frontend/e2e`
+
 ## Stack and Tooling
 
 Do not assume a fixed stack.
@@ -187,6 +194,22 @@ Baseline rules for frontend/UI work:
 - UI tasks should not move to `Ready` without an approved Pencil reference.
 - If implementation uncovers a meaningful visual change, update Pencil first and then replicate the change in code.
 - Do not let production code become the source of truth for unresolved design decisions.
+
+## Nx App Layout (When Applicable)
+
+If the project uses Nx and groups work by application, the default baseline may be:
+
+- `apps/<app>/backend`
+- `apps/<app>/frontend`
+
+Test placement baseline for that structure:
+
+- backend unit and integration tests colocated with implementation files
+- backend e2e tests under the backend root test area
+- frontend unit and page integration tests colocated with implementation files
+- frontend e2e tests under the frontend root e2e area
+
+Do not assume this structure unless bootstrap confirms the project uses it.
 
 ## Commit Conventions
 

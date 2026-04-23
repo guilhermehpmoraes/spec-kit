@@ -35,7 +35,14 @@ The consuming project should document its actual layout here after bootstrap. Ty
 design/
   <artifacts-and-tokens>/
 apps/
-  <app-or-service>/
+  <app>/
+    backend/
+      src/
+      test/
+    frontend/
+      src/
+      e2e/
+  <service>/
 packages/
   <shared-package>/
 libs/
@@ -61,6 +68,8 @@ docs/
 ```
 
 If the project uses a different structure, document it explicitly instead of trying to force it into one of these examples.
+
+If the project uses Nx with full-stack app grouping, a common baseline is `apps/<app>/backend` and `apps/<app>/frontend`, with unit and integration tests colocated in each stack and end-to-end tests stored in a stack-root test area.
 
 ## Documentation Hierarchy
 

@@ -24,6 +24,7 @@ The bootstrap flow must:
    - product or platform name
    - repository topology (monorepo, single repo, multi-service, etc.)
    - stacks, frameworks, runtimes, and major libraries
+   - database and persistence modeling conventions, when the project persists business data
    - package manager or build tool
    - testing and quality tools
    - frontend design workflow, when a frontend exists
@@ -176,6 +177,13 @@ After bootstrap, this section should record the actual project choices for:
 Do not assume Portuguese database names, English-only code, or any other hardcoded convention.
 
 After bootstrap, this section should document the project's naming matrix in line with ADR-005.
+
+If the project persists business data, bootstrap should also document the entity lifecycle baseline in line with ADR-013, including:
+
+- whether a reusable base entity or equivalent shared persistence abstraction exists
+- the six semantic lifecycle fields for created by/at, modified by/at, and deleted by/at
+- the project-specific field names for those semantics
+- soft delete as the default deletion strategy and any justified exceptions
 
 ## Frontend and Design Workflow
 

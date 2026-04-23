@@ -84,7 +84,7 @@ After all questions are resolved:
 
 #### Mandatory detail levels
 
-- **Data design**: Exact storage object names, field names, types, nullability, defaults, PK/FK or references, constraints, indexes, and migration strategy. Use the project's naming conventions (ADR-005).
+- **Data design**: Exact storage object names, field names, types, nullability, defaults, PK/FK or references, constraints, indexes, and migration strategy. Use the project's naming conventions (ADR-005). When the feature touches persisted entities, also specify whether it uses the shared base entity or equivalent abstraction, how the six lifecycle metadata semantics are mapped to concrete field names, and how soft delete is represented, queried, and enforced according to ADR-013.
 - **API contracts**: Exact endpoints, HTTP methods, request/response shapes with field names and types, validation rules, error codes and messages.
 - **UI contracts** (if applicable): Routes, component hierarchy, states (loading/empty/error/success), field validations, interaction behavior, responsive behavior, and Pencil prototype references when visual impact exists.
 - **File paths**: Exact files to create or modify — no vague references like "backend module". List actual paths.

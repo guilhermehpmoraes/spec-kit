@@ -77,7 +77,7 @@ After user confirmation, generate one file per task:
 Every task MUST include the following at the level of detail specified. If a section does not apply, write `N/A` with a brief explanation.
 
 - **Section 4.1 — Backend and API Contracts**: Exact endpoint, method, request/response contracts with field names, types, validations, error codes and messages. Copy from the plan — do not summarize or shorten.
-- **Section 4.2 — Database Specification**: Exact table names, column names, SQL types, nullability, defaults, PK/FK, constraints, indexes, migration file names, forward/rollback steps. Copy from the plan — do not summarize or shorten.
+- **Section 4.2 — Database Specification**: Exact table names, column names, SQL types, nullability, defaults, PK/FK, constraints, indexes, migration file names, forward/rollback steps. Copy from the plan — do not summarize or shorten. When applicable, also include whether the task uses the shared base entity or equivalent abstraction, the concrete field names used for the six lifecycle metadata semantics, the soft delete representation and query behavior, and any justified hard-delete exception.
 - **Section 4.3 — Frontend and UX Contracts**: Routes, components, states, field validations, interaction behavior. Copy from the plan when applicable.
 - For visually relevant UI tasks, include the approved Pencil reference, the relevant design token/theme references, and expected responsive behavior.
 - **Section 4.4 — Cross-Cutting Constraints**: Security, performance, observability, compatibility relevant to this specific task.

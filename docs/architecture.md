@@ -116,6 +116,7 @@ Document the project's actual choices here after bootstrap:
 
 - dependency management policy
 - naming and language conventions
+- entity lifecycle metadata and deletion strategy for persistent data
 - test organization
 - build output conventions
 - API and contract ownership

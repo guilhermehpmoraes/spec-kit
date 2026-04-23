@@ -45,6 +45,11 @@ Ask the user for the real project context in one grouped batch. Cover at least:
 - repository topology
 - main deployable surfaces (apps, services, packages, libraries, workers, etc.)
 - languages, runtimes, frameworks, and key libraries
+- database and persistence modeling conventions when the project stores business data, including:
+	- whether there is a reusable base entity or equivalent shared persistence abstraction
+	- the standard six lifecycle fields for created by/at, modified by/at, and deleted by/at
+	- how those fields are named according to the project's naming language
+	- whether soft delete is the default deletion strategy and any known exceptions
 - dependency/package/build tooling
 - test, lint, format, and static analysis tools
 - frontend design workflow when the project has UI work, including:
